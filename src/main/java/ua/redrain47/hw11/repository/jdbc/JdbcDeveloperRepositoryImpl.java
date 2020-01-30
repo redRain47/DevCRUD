@@ -1,0 +1,228 @@
+package ua.redrain47.hw11.repository.jdbc;
+import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
+import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
+import ua.redrain47.hw11.model.Account;
+import ua.redrain47.hw11.model.Developer;
+import ua.redrain47.hw11.model.Skill;
+import ua.redrain47.hw11.queries.DeveloperQueries;
+import ua.redrain47.hw11.queries.DeveloperSkillsQueries;
+import ua.redrain47.hw11.repository.DeveloperRepository;
+import ua.redrain47.hw11.util.ConnectionUtil;
+import ua.redrain47.hw11.util.ObjectMapper;
+
+import java.sql.*;
+import java.util.List;
+import java.util.Set;
+
+public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
+    private Connection connection;
+
+    public JdbcDeveloperRepositoryImpl() throws ConnectionIssueException {
+        try {
+            connection = ConnectionUtil.getConnection();
+        } catch (SQLException e) {
+            throw new ConnectionIssueException(e);
+        }
+    }
+
+    @Override
+    public boolean save(Developer newDeveloper)
+            throws SuchEntityAlreadyExistsException, ConnectionIssueException {
+        if (newDeveloper != null) {
+            try (PreparedStatement preparedStatement = connection
+                    .prepareStatement(DeveloperQueries.INSERT_QUERY)) {
+
+                preparedStatement.setString(1, newDeveloper.getFirstName());
+                preparedStatement.setString(2, newDeveloper.getLastName());
+
+                Account account = newDeveloper.getAccount();
+
+                if (account != null) {
+                    preparedStatement.setInt(3,
+                            account.getId().intValue());
+                } else {
+                    preparedStatement.setNull(3, Types.NULL);
+                }
+
+                preparedStatement.execute();
+                insertDeveloperSkills(newDeveloper);
+
+                return true;
+            } catch (SQLIntegrityConstraintViolationException e) {
+                throw new SuchEntityAlreadyExistsException(e);
+            } catch (SQLException e) {
+                throw new ConnectionIssueException(e);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public Developer getById(Long searchId) throws ConnectionIssueException {
+        if (searchId == null) {
+            return null;
+        }
+
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(DeveloperQueries.SELECT_BY_ID_QUERY)){
+
+            preparedStatement.setInt(1, searchId.intValue());
+
+            ResultSet developerResultSet = preparedStatement.executeQuery();
+            Developer foundDeveloper = null;
+            List<Developer> developerList = ObjectMapper.mapToDeveloperList(developerResultSet);
+
+            if (developerList != null && developerList.size() != 0) {
+                foundDeveloper = developerList.get(0);
+                setDeveloperSkillSet(foundDeveloper);
+                // TODO: add account setting
+            }
+
+            return foundDeveloper;
+        } catch (SQLException e) {
+            throw new ConnectionIssueException(e);
+        }
+    }
+
+    @Override
+    public List<Developer> getAll() throws ConnectionIssueException {
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(DeveloperQueries.SELECT_ALL_QUERY)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Developer> developerList = ObjectMapper.mapToDeveloperList(resultSet);
+
+            for (Developer developer : developerList) {
+                setDeveloperSkillSet(developer);
+            }
+
+            return (developerList.size() != 0) ? developerList : null;
+        } catch (SQLException e) {
+            throw new ConnectionIssueException(e);
+        }
+    }
+
+    @Override
+    public boolean update(Developer updatedDeveloper)
+            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+        if (updatedDeveloper != null) {
+            try (PreparedStatement preparedStatement = connection
+                    .prepareStatement(DeveloperQueries.UPDATE_BY_ID_QUERY)) {
+
+                preparedStatement.setString(1, updatedDeveloper.getFirstName());
+                preparedStatement.setString(2, updatedDeveloper.getLastName());
+
+                Account developerAccount = updatedDeveloper.getAccount();
+
+                if (developerAccount != null) {
+                    preparedStatement.setInt(3, developerAccount.getId()
+                            .intValue());
+                } else {
+                    preparedStatement.setNull(3, Types.NULL);
+                }
+
+                preparedStatement.setInt(4, updatedDeveloper.getId().intValue());
+                preparedStatement.execute();
+
+                deleteAllDeveloperSkills(updatedDeveloper.getId());
+                insertDeveloperSkills(updatedDeveloper);
+
+                return true;
+            } catch (SQLIntegrityConstraintViolationException e) {
+                throw new SuchEntityAlreadyExistsException(e);
+            } catch (SQLException e) {
+                throw new ConnectionIssueException(e);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean deleteById(Long deletedId)
+            throws DeletingReferencedRecordException,
+            ConnectionIssueException {
+        if (deletedId == null) {
+            return false;
+        }
+
+        try (PreparedStatement  preparedStatement = connection
+                .prepareStatement(DeveloperQueries.DELETE_BY_ID_QUERY)) {
+            deleteAllDeveloperSkills(deletedId);
+
+            preparedStatement.setInt(1, deletedId.intValue());
+            preparedStatement.execute();
+
+            return true;
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new DeletingReferencedRecordException(e);
+        } catch (SQLException e) {
+            throw new ConnectionIssueException(e);
+        }
+    }
+
+    private void insertDeveloperSkills(Developer developer)
+            throws SQLException {
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(DeveloperSkillsQueries
+                        .INSERT_DEVELOPER_SKILLS_QUERY)) {
+
+            Set<Skill> devSkillSet = developer.getSkillSet();
+            int intDeveloperId = selectDeveloperId(developer).intValue();
+
+            for (Skill skill : devSkillSet) {
+                preparedStatement.setInt(1, intDeveloperId);
+                preparedStatement.setInt(2, skill.getId().intValue());
+
+                preparedStatement.addBatch();
+            }
+
+            preparedStatement.executeBatch();
+        }
+    }
+
+    private Long selectDeveloperId(Developer developer) throws SQLException {
+        if (developer == null) {
+            return null;
+        }
+
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(DeveloperQueries
+                        .SELECT_LAST_INSERT_ID)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            long id = (resultSet.next())
+                    ? resultSet.getInt("id")
+                    : 0L;
+
+            return id;
+        }
+    }
+
+    private void deleteAllDeveloperSkills(Long developerId)
+            throws SQLException {
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(DeveloperSkillsQueries
+                        .DELETE_DEVELOPER_SKILLS_QUERY)) {
+
+            preparedStatement.setInt(1, developerId.intValue());
+            preparedStatement.execute();
+        }
+    }
+
+    private void setDeveloperSkillSet(Developer developer)
+            throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DeveloperSkillsQueries
+                .SELECT_SKILLS_BY_DEVELOPER_ID_QUERY)) {
+
+            preparedStatement.setInt(1, developer.getId().intValue());
+
+            ResultSet devSkillsResultSet = preparedStatement.executeQuery();
+            Set<Skill> skillSet = ObjectMapper.mapToSkillSet(devSkillsResultSet);
+
+            developer.setSkillSet(skillSet);
+        }
+    }
+}
