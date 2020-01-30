@@ -24,7 +24,7 @@ public class ConnectionUtil {
         }
 
         basicDataSource.setUrl(properties.getProperty("url"));
-        basicDataSource.setUsername(properties.getProperty("user"));
+        basicDataSource.setUsername(properties.getProperty("username"));
         basicDataSource.setPassword(properties.getProperty("password"));
     }
 

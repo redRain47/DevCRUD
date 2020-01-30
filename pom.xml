@@ -72,14 +72,14 @@
                 <version>${liquibase.version}</version>
                 <configuration>
                     <changeLogFile>
-                        liquibase/logback.xml
+                        liquibase/changelog.xml
                     </changeLogFile>
                     <driver>com.mysql.jdbc.Driver</driver>
                     <url>
-                        jdbc:mysql://localhost:3306/epam_study
+                        jdbc:mysql://localhost:3306/epam_study?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC
                     </url>
                     <username>root</username>
-                    <password>hugo449079</password>
+                    <password>12345</password>
                 </configuration>
                 <executions>
                     <execution>
