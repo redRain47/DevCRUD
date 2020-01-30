@@ -3,6 +3,9 @@ package ua.redrain47.hw11.view;
 import ua.redrain47.hw11.controller.AccountController;
 import ua.redrain47.hw11.controller.DeveloperController;
 import ua.redrain47.hw11.controller.SkillController;
+import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
+import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Account;
 import ua.redrain47.hw11.model.Developer;
 import ua.redrain47.hw11.model.Skill;
@@ -19,13 +22,20 @@ import static ua.redrain47.hw11.messages.DeveloperMessages.*;
 import static ua.redrain47.hw11.messages.SkillMessages.NO_SUCH_SKILL_TEXT;
 
 public class DeveloperView extends BaseView {
-    private DeveloperController developerController =
-            new DeveloperController();
-    private SkillController skillController =
-            new SkillController();
-    private AccountController accountController =
-            new AccountController();
+    private SkillController skillController;
+    private AccountController accountController;
+    private DeveloperController developerController;
     private IntegerAnswer integerAnswer = new IntegerAnswer();
+
+    public DeveloperView() {
+        try {
+            this.accountController = new AccountController();
+            this.skillController = new SkillController();
+            this.developerController = new DeveloperController();
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     @Override
     public void run() {
@@ -63,8 +73,13 @@ public class DeveloperView extends BaseView {
         Developer newDeveloper = new Developer(0L, firstName,
                 lastName, skillSet, account);
 
-        developerController.addData(newDeveloper);
-        System.out.println(ADDED_DEVELOPER_TEXT);
+        try {
+            developerController.addData(newDeveloper);
+            System.out.println(ADDED_DEVELOPER_TEXT);
+        } catch (SuchEntityAlreadyExistsException
+                | ConnectionIssueException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private String enterName(String invitingMessage) {
@@ -84,16 +99,19 @@ public class DeveloperView extends BaseView {
             tempId = enterId();
 
             if (!skillIds.contains(tempId)) {
-                tempSkill = skillController.getDataById(tempId);
+                try {
+                    tempSkill = skillController.getDataById(tempId);
 
-                if (tempSkill != null) {
-                    skillIds.add(tempId);
-                    skillSet.add(tempSkill);
-                    continue;
-                } else {
-                    System.out.println(NO_SUCH_SKILL_TEXT);
+                    if (tempSkill != null) {
+                        skillIds.add(tempId);
+                        skillSet.add(tempSkill);
+                        continue;
+                    } else {
+                        System.out.println(NO_SUCH_SKILL_TEXT);
+                    }
+                } catch (ConnectionIssueException e) {
+                    System.out.println(e.getMessage());
                 }
-
             } else {
                 System.out.println(SUCH_ID_HAS_BEEN_ALREADY_ENTERED_TEXT);
             }
@@ -118,12 +136,16 @@ public class DeveloperView extends BaseView {
 
         while (true) {
             tempId = enterId();
-            tempAccount = accountController.getDataById(tempId);
+            try {
+                tempAccount = accountController.getDataById(tempId);
 
-            if (tempAccount == null) {
-                System.out.println(NO_SUCH_ACCOUNT_TEXT);
-            } else {
-                return tempAccount;
+                if (tempAccount == null) {
+                    System.out.println(NO_SUCH_ACCOUNT_TEXT);
+                } else {
+                    return tempAccount;
+                }
+            } catch (ConnectionIssueException e) {
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -131,47 +153,66 @@ public class DeveloperView extends BaseView {
     @Override
     public void showData() {
         Long searchId = super.enterId();
-        Developer requestedDeveloper = developerController.getDataById(searchId);
+        Developer requestedDeveloper;
 
-        if (requestedDeveloper != null) {
-            System.out.println(requestedDeveloper);
-        } else {
-            System.out.println(NO_SUCH_DEVELOPER_TEXT);
+        try {
+            requestedDeveloper = developerController.getDataById(searchId);
+
+            if (requestedDeveloper != null) {
+                System.out.println(requestedDeveloper);
+            } else {
+                System.out.println(NO_SUCH_DEVELOPER_TEXT);
+            }
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void showAllData() {
-        ArrayList<Developer> allDevelopers =
-                (ArrayList<Developer>) developerController.getAllData();
+        ArrayList<Developer> allDevelopers;
 
-        if (allDevelopers != null) {
-            for (Developer developer : allDevelopers) {
-                System.out.println(developer);
+        try {
+            allDevelopers = (ArrayList<Developer>) developerController.getAllData();
+
+            if (allDevelopers != null) {
+                for (Developer developer : allDevelopers) {
+                    System.out.println(developer);
+                }
+            } else {
+                System.out.println(NO_DATA_TEXT);
             }
-        } else {
-            System.out.println(NO_DATA_TEXT);
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void updateData() {
         Long searchId = super.enterId();
-        Developer requestedDeveloper = developerController
-                .getDataById(searchId);
+        Developer requestedDeveloper;
 
-        if (requestedDeveloper != null) {
-            String firstName = enterName(ENTER_NEW_DEVELOPER_FIRST_NAME_TEXT);
-            String lastName = enterName(ENTER_NEW_DEVELOPER_LAST_NAME_TEXT);
-            Set<Skill> skillSet = enterSkills();
-            Account account = enterAccount();
-            Developer newDeveloper = new Developer(requestedDeveloper.getId(),
-                    firstName, lastName, skillSet, account);
+        try {
+            requestedDeveloper = developerController
+                    .getDataById(searchId);
 
-            developerController.updateDataById(newDeveloper);
-            System.out.println(UPDATED_DEVELOPER_TEXT);
-        } else {
-            System.out.println(NO_SUCH_DEVELOPER_TEXT);
+            if (requestedDeveloper != null) {
+                String firstName = enterName(ENTER_NEW_DEVELOPER_FIRST_NAME_TEXT);
+                String lastName = enterName(ENTER_NEW_DEVELOPER_LAST_NAME_TEXT);
+                Set<Skill> skillSet = enterSkills();
+                Account account = enterAccount();
+                Developer newDeveloper = new Developer(requestedDeveloper.getId(),
+                        firstName, lastName, skillSet, account);
+
+                developerController.updateDataById(newDeveloper);
+                System.out.println(UPDATED_DEVELOPER_TEXT);
+            } else {
+                System.out.println(NO_SUCH_DEVELOPER_TEXT);
+            }
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
+        } catch (SuchEntityAlreadyExistsException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -179,11 +220,16 @@ public class DeveloperView extends BaseView {
     public void deleteData() {
         Long searchId = super.enterId();
 
-        if (developerController.getDataById(searchId) != null) {
-            developerController.deleteDataById(searchId);
-            System.out.println(DELETED_DEVELOPER_TEXT);
-        } else {
-            System.out.println(NO_SUCH_DEVELOPER_TEXT);
+        try {
+            if (developerController.getDataById(searchId) != null) {
+                developerController.deleteDataById(searchId);
+                System.out.println(DELETED_DEVELOPER_TEXT);
+            } else {
+                System.out.println(NO_SUCH_DEVELOPER_TEXT);
+            }
+        } catch (ConnectionIssueException
+                | DeletingReferencedRecordException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

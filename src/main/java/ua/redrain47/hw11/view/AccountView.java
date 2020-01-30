@@ -1,6 +1,9 @@
 package ua.redrain47.hw11.view;
 
 import ua.redrain47.hw11.controller.AccountController;
+import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
+import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Account;
 import ua.redrain47.hw11.model.AccountStatus;
 import ua.redrain47.hw11.util.IntegerAnswer;
@@ -12,8 +15,16 @@ import static ua.redrain47.hw11.messages.CommonMessages.ENTER_MENU_ITEM_CHOICE_T
 import static ua.redrain47.hw11.messages.CommonMessages.NO_DATA_TEXT;
 
 public class AccountView extends BaseView {
-    private AccountController accountController = new AccountController();
+    private AccountController accountController;
     private IntegerAnswer integerAnswer = new IntegerAnswer();
+
+    public AccountView() {
+        try {
+            this.accountController = new AccountController();
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     @Override
     public void run() {
@@ -44,9 +55,14 @@ public class AccountView extends BaseView {
 
     @Override
     public void addData() {
-        accountController.addData(new Account(0L, enterEmail(false),
-                enterAccountStatus(false)));
-        System.out.println(ADDED_ACCOUNT_TEXT);
+        try {
+            accountController.addData(new Account(0L, enterEmail(false),
+                    enterAccountStatus(false)));
+            System.out.println(ADDED_ACCOUNT_TEXT);
+        } catch (ConnectionIssueException
+                | SuchEntityAlreadyExistsException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private String enterEmail(boolean update) {
@@ -78,46 +94,62 @@ public class AccountView extends BaseView {
     @Override
     public void showData() {
         Long searchId = super.enterId();
-        Account requestedAccount = accountController.getDataById(searchId);
+        Account requestedAccount;
+        try {
+            requestedAccount = accountController.getDataById(searchId);
 
-        if (requestedAccount != null) {
-            System.out.println(" " + requestedAccount.getId() + " | "
-                    + requestedAccount.getEmail() + " | "
-                    + requestedAccount.getAccountStatus());
-        } else {
-            System.out.println(NO_SUCH_ACCOUNT_TEXT);
+            if (requestedAccount != null) {
+                System.out.println(" " + requestedAccount.getId() + " | "
+                        + requestedAccount.getEmail() + " | "
+                        + requestedAccount.getAccountStatus());
+            } else {
+                System.out.println(NO_SUCH_ACCOUNT_TEXT);
+            }
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void showAllData() {
-        ArrayList<Account> allAccounts = (ArrayList<Account>) accountController.getAllData();
+        ArrayList<Account> allAccounts = null;
+        try {
+            allAccounts = (ArrayList<Account>) accountController.getAllData();
 
-        if (allAccounts != null) {
-            for (Account account : allAccounts) {
-                System.out.println(" " + account.getId() + " | "
-                        + account.getEmail() + " | "
-                        + account.getAccountStatus());
+            if (allAccounts != null) {
+                for (Account account : allAccounts) {
+                    System.out.println(" " + account.getId() + " | "
+                            + account.getEmail() + " | "
+                            + account.getAccountStatus());
+                }
+            } else {
+                System.out.println(NO_DATA_TEXT);
             }
-        } else {
-            System.out.println(NO_DATA_TEXT);
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void updateData() {
         Long searchId = super.enterId();
-        Account requestedAccount = accountController.getDataById(searchId);
+        Account requestedAccount;
+        try {
+            requestedAccount = accountController.getDataById(searchId);
 
-        if (requestedAccount != null) {
-            requestedAccount.setEmail(enterEmail(true));
-            requestedAccount.setAccountStatus(enterAccountStatus(true));
+            if (requestedAccount != null) {
+                requestedAccount.setEmail(enterEmail(true));
+                requestedAccount.setAccountStatus(enterAccountStatus(true));
 
-            accountController.updateDataById(requestedAccount);
+                accountController.updateDataById(requestedAccount);
 
-            System.out.println(UPDATED_ACCOUNT_TEXT);
-        } else {
-            System.out.println(NO_SUCH_ACCOUNT_TEXT);
+                System.out.println(UPDATED_ACCOUNT_TEXT);
+            } else {
+                System.out.println(NO_SUCH_ACCOUNT_TEXT);
+            }
+        } catch (ConnectionIssueException
+                | SuchEntityAlreadyExistsException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -125,11 +157,17 @@ public class AccountView extends BaseView {
     public void deleteData() {
         Long searchId = super.enterId();
 
-        if (accountController.getDataById(searchId) != null) {
-            accountController.deleteDataById(searchId);
-            System.out.println(DELETED_ACCOUNT_TEXT);
-        } else {
-            System.out.println(NO_SUCH_ACCOUNT_TEXT);
+        try {
+            if (accountController.getDataById(searchId) != null) {
+                accountController.deleteDataById(searchId);
+                System.out.println(DELETED_ACCOUNT_TEXT);
+            } else {
+                System.out.println(NO_SUCH_ACCOUNT_TEXT);
+            }
+        } catch (ConnectionIssueException
+                | DeletingReferencedRecordException e) {
+            // TODO: add handler of deleting referenced row
+            System.out.println(e.getMessage());
         }
     }
 }

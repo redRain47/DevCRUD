@@ -1,6 +1,9 @@
 package ua.redrain47.hw11.view;
 
 import ua.redrain47.hw11.controller.SkillController;
+import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
+import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Skill;
 import ua.redrain47.hw11.util.IntegerAnswer;
 
@@ -10,8 +13,16 @@ import static ua.redrain47.hw11.messages.SkillMessages.*;
 import static ua.redrain47.hw11.messages.CommonMessages.*;
 
 public class SkillView extends BaseView {
-    private SkillController skillController = new SkillController();
+    private SkillController skillController;
     private IntegerAnswer integerAnswer = new IntegerAnswer();
+
+    public SkillView() {
+        try {
+            this.skillController = new SkillController();
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     @Override
     public void run() {
@@ -43,65 +54,96 @@ public class SkillView extends BaseView {
     @Override
     public void addData() {
         System.out.println(ENTER_SKILL_NAME_TEXT);
-        skillController.addData(new Skill(0L, super.scanner.nextLine()));
-        System.out.println(ADDED_SKILL_TEXT);
+        try {
+            skillController.addData(new Skill(0L, super.scanner.nextLine()));
+            System.out.println(ADDED_SKILL_TEXT);
+        } catch (ConnectionIssueException
+                | SuchEntityAlreadyExistsException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void showData() {
         Long searchId = super.enterId();
-        Skill requestedSkill = skillController.getDataById(searchId);
+        Skill requestedSkill;
 
-        if (requestedSkill != null) {
-            System.out.println("\n " + requestedSkill.getId() + " | "
-                    + requestedSkill.getName());
-        } else {
-            System.out.println(NO_SUCH_SKILL_TEXT);
+        try {
+            requestedSkill = skillController.getDataById(searchId);
+
+            if (requestedSkill != null) {
+                System.out.println("\n " + requestedSkill.getId() + " | "
+                        + requestedSkill.getName());
+            } else {
+                System.out.println(NO_SUCH_SKILL_TEXT);
+            }
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void showAllData() {
-        ArrayList<Skill> allSkills = (ArrayList<Skill>) skillController.getAllData();
+        ArrayList<Skill> allSkills;
 
-        if (allSkills != null) {
-            for (Skill skill : allSkills) {
-                System.out.println(" " + skill.getId() + " | "
-                        + skill.getName());
+        try {
+            allSkills = (ArrayList<Skill>) skillController.getAllData();
+
+            if (allSkills != null) {
+                for (Skill skill : allSkills) {
+                    System.out.println(" " + skill.getId() + " | "
+                            + skill.getName());
+                }
+            } else {
+                System.out.println(NO_DATA_TEXT);
+                System.out.println();
             }
-        } else {
-            System.out.println(NO_DATA_TEXT);
-            System.out.println();
+        } catch (ConnectionIssueException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void updateData() {
         Long searchId = super.enterId();
-        Skill requestedSkill = skillController.getDataById(searchId);
+        Skill requestedSkill;
 
-        if (requestedSkill != null) {
-            System.out.println(ENTER_NEW_SKILL_NAME_TEXT);
+        try {
+            requestedSkill = skillController.getDataById(searchId);
 
-            requestedSkill.setName(scanner.nextLine());
-            skillController.updateDataById(requestedSkill);
+            if (requestedSkill != null) {
+                System.out.println(ENTER_NEW_SKILL_NAME_TEXT);
 
-            System.out.println(UPDATED_SKILL_TEXT);
-        } else {
-            System.out.println(NO_SUCH_SKILL_TEXT);
+                requestedSkill.setName(scanner.nextLine());
+                skillController.updateDataById(requestedSkill);
+
+                System.out.println(UPDATED_SKILL_TEXT);
+            } else {
+                System.out.println(NO_SUCH_SKILL_TEXT);
+            }
+        } catch (ConnectionIssueException
+                | SuchEntityAlreadyExistsException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void deleteData() {
         Long searchId = super.enterId();
-        Skill requestedSkill = skillController.getDataById(searchId);
+        Skill requestedSkill;
 
-        if (requestedSkill != null) {
-            skillController.deleteDataById(searchId);
-            System.out.println(DELETED_SKILL_TEXT);
-        } else {
-            System.out.println(NO_SUCH_SKILL_TEXT);
+        try {
+            requestedSkill = skillController.getDataById(searchId);
+
+            if (requestedSkill != null) {
+                skillController.deleteDataById(searchId);
+                System.out.println(DELETED_SKILL_TEXT);
+            } else {
+                System.out.println(NO_SUCH_SKILL_TEXT);
+            }
+        } catch (ConnectionIssueException
+                | DeletingReferencedRecordException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
