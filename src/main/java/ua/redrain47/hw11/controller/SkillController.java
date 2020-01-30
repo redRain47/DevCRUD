@@ -1,43 +1,40 @@
 package ua.redrain47.hw11.controller;
 
+import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
+import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Skill;
-import ua.redrain47.hw11.repository.SkillRepository;
-import ua.redrain47.hw11.repository.io.IOSkillRepositoryImpl;
+import ua.redrain47.hw11.service.SkillService;
 
 import java.util.List;
 
 public class SkillController {
-    private SkillRepository skillRepo;
+    private SkillService skillService = new SkillService();
 
-    public SkillController() {
-        this.skillRepo = new IOSkillRepositoryImpl();
+    public SkillController() throws ConnectionIssueException {
     }
 
-    public Skill getDataById(Long id) {
-        return skillRepo.getById(id);
+    public Skill getDataById(Long id) throws ConnectionIssueException {
+        return skillService.getDataById(id);
     }
 
-    public List<Skill> getAllData() {
-        return skillRepo.getAll();
+    public List<Skill> getAllData() throws ConnectionIssueException {
+        return skillService.getAllData();
     }
 
-    public boolean addData(Skill addedSkill) {
-        return skillRepo.save(addedSkill);
+    public boolean addData(Skill addedSkill)
+            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+        return skillService.addData(addedSkill);
     }
 
-    public boolean updateDataById(Skill updatedSkill) {
-        return skillRepo.update(updatedSkill);
+    public boolean updateDataById(Skill updatedSkill)
+            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+        return skillService.updateDataById(updatedSkill);
     }
 
-    public boolean deleteDataById(Long id) {
-        return skillRepo.deleteById(id);
-    }
-
-    public boolean isEmptyData() {
-        return skillRepo.isEmpty();
-    }
-
-    public Long getLastId() {
-        return skillRepo.getAutoIncrId();
+    public boolean deleteDataById(Long id)
+            throws DeletingReferencedRecordException,
+            ConnectionIssueException {
+        return skillService.deleteDataById(id);
     }
 }

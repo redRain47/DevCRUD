@@ -1,43 +1,39 @@
 package ua.redrain47.hw11.controller;
 
+import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
+import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Account;
-import ua.redrain47.hw11.repository.AccountRepository;
-import ua.redrain47.hw11.repository.io.IOAccountRepositoryImpl;
+import ua.redrain47.hw11.service.AccountService;
 
 import java.util.List;
 
 public class AccountController {
-    private AccountRepository accountRepo;
+    private AccountService accountService = new AccountService();
 
-    public AccountController() {
-        this.accountRepo = new IOAccountRepositoryImpl();
+    public AccountController() throws ConnectionIssueException {
     }
 
-    public Account getDataById(Long id) {
-        return accountRepo.getById(id);
+    public Account getDataById(Long id) throws ConnectionIssueException {
+        return accountService.getDataById(id);
     }
 
-    public List<Account> getAllData() {
-        return accountRepo.getAll();
+    public List<Account> getAllData() throws ConnectionIssueException {
+        return accountService.getAllData();
     }
 
-    public boolean addData(Account addedAccount) {
-        return accountRepo.save(addedAccount);
+    public boolean addData(Account addedAccount)
+            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+        return accountService.addData(addedAccount);
     }
 
-    public boolean updateDataById(Account updatedAccount) {
-        return accountRepo.update(updatedAccount);
+    public boolean updateDataById(Account updatedAccount)
+            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+        return accountService.updateDataById(updatedAccount);
     }
 
-    public boolean deleteDataById(Long id) {
-        return accountRepo.deleteById(id);
-    }
-
-    public boolean isEmptyData() {
-        return accountRepo.isEmpty();
-    }
-
-    public Long getLastId() {
-        return accountRepo.getAutoIncrId();
+    public boolean deleteDataById(Long id)  throws DeletingReferencedRecordException,
+            ConnectionIssueException {
+        return accountService.deleteDataById(id);
     }
 }
