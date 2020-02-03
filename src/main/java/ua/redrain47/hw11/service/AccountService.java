@@ -1,12 +1,12 @@
 package ua.redrain47.hw11.service;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DbConnectionIssueException;
 import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Account;
 import ua.redrain47.hw11.repository.AccountRepository;
-import ua.redrain47.hw11.repository.jdbc.JdbcAccountRepositoryImpl;
+import ua.redrain47.hw11.repository.JdbcAccountRepositoryImpl;
 
 import java.util.List;
 
@@ -14,59 +14,60 @@ import java.util.List;
 public class AccountService {
     private AccountRepository accountRepo;
 
-    public AccountService() throws ConnectionIssueException{
+    public AccountService() throws DbConnectionIssueException {
         try {
             accountRepo = new JdbcAccountRepositoryImpl();
             log.debug("AccountService -> Instance created");
-        } catch (ConnectionIssueException e) {
+        } catch (DbConnectionIssueException e) {
+            // TODO: split handling of connection issue (error) from other issue (warn)
             log.error("AccountService -> " + e);
             throw e;
         }
     }
 
-    public Account getDataById(Long id) throws ConnectionIssueException {
+    public Account getDataById(Long id) throws DbConnectionIssueException {
         try {
             Account account = accountRepo.getById(id);
             log.debug("AccountService -> Got data by id");
             return account;
-        } catch (ConnectionIssueException e) {
+        } catch (DbConnectionIssueException e) {
             log.error("AccountService -> " + e);
             throw e;
         }
     }
 
-    public List<Account> getAllData() throws ConnectionIssueException {
+    public List<Account> getAllData() throws DbConnectionIssueException {
         try {
             List<Account> accountList = accountRepo.getAll();
             log.debug("AccountService -> Got all data");
             return accountList;
-        } catch (ConnectionIssueException e) {
+        } catch (DbConnectionIssueException e) {
             log.error("AccountService -> " + e);
             throw e;
         }
     }
 
     public boolean addData(Account addedAccount)
-            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+            throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         try {
             accountRepo.save(addedAccount);
             log.debug("AccountService -> Added data");
             return true;
         } catch (SuchEntityAlreadyExistsException
-                | ConnectionIssueException e) {
+                | DbConnectionIssueException e) {
             log.error("AccountService -> " + e);
             throw e;
         }
     }
 
     public boolean updateDataById(Account updatedAccount)
-            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+            throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         try {
             accountRepo.update(updatedAccount);
             log.debug("AccountService -> Updated data by id");
             return true;
         } catch (SuchEntityAlreadyExistsException
-                | ConnectionIssueException e) {
+                | DbConnectionIssueException e) {
             log.error("AccountService -> " + e);
             throw e;
         }
@@ -74,13 +75,13 @@ public class AccountService {
 
     public boolean deleteDataById(Long id)
             throws DeletingReferencedRecordException,
-            ConnectionIssueException {
+            DbConnectionIssueException {
         try {
             accountRepo.deleteById(id);
             log.debug("AccountService -> Deleted data by id");
             return true;
         } catch (DeletingReferencedRecordException
-                | ConnectionIssueException e) {
+                | DbConnectionIssueException e) {
             log.error("AccountService -> " + e);
             throw e;
         }

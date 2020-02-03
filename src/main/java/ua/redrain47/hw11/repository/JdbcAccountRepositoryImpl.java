@@ -1,12 +1,10 @@
-package ua.redrain47.hw11.repository.jdbc;
+package ua.redrain47.hw11.repository;
 
-import lombok.SneakyThrows;
-import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DbConnectionIssueException;
 import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Account;
 import ua.redrain47.hw11.queries.AccountQueries;
-import ua.redrain47.hw11.repository.AccountRepository;
 import ua.redrain47.hw11.util.ConnectionUtil;
 import ua.redrain47.hw11.util.ObjectMapper;
 
@@ -16,17 +14,21 @@ import java.util.List;
 public class JdbcAccountRepositoryImpl implements AccountRepository {
     private Connection connection;
 
-    public JdbcAccountRepositoryImpl() throws ConnectionIssueException {
+    public JdbcAccountRepositoryImpl() throws DbConnectionIssueException {
         try {
-            connection = ConnectionUtil.getConnection();
+            this.connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
+    }
+
+    public JdbcAccountRepositoryImpl(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public boolean save(Account newAccount)
-            throws SuchEntityAlreadyExistsException, ConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         if (newAccount != null) {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement(AccountQueries.INSERT_QUERY)) {
@@ -41,7 +43,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
             } catch (SQLIntegrityConstraintViolationException e) {
                 throw new SuchEntityAlreadyExistsException(e);
             } catch (SQLException e) {
-                throw new ConnectionIssueException(e);
+                throw new DbConnectionIssueException(e);
             }
         }
 
@@ -49,7 +51,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account getById(Long searchId) throws ConnectionIssueException {
+    public Account getById(Long searchId) throws DbConnectionIssueException {
         if (searchId == null) {
             return null;
         }
@@ -69,12 +71,12 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
 
             return foundAccount;
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
     }
 
     @Override
-    public List<Account> getAll() throws ConnectionIssueException {
+    public List<Account> getAll() throws DbConnectionIssueException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.SELECT_ALL_QUERY)) {
 
@@ -83,13 +85,13 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
 
             return (accountList.size() != 0) ? accountList : null;
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
     }
 
     @Override
     public boolean update(Account updatedAccount)
-            throws SuchEntityAlreadyExistsException, ConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         if (updatedAccount != null) {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement(AccountQueries.UPDATE_BY_ID_QUERY)) {
@@ -104,7 +106,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
             } catch (SQLIntegrityConstraintViolationException e) {
                 throw new SuchEntityAlreadyExistsException(e);
             } catch (SQLException e) {
-                throw new ConnectionIssueException(e);
+                throw new DbConnectionIssueException(e);
             }
         }
 
@@ -113,7 +115,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
 
     @Override
     public boolean deleteById(Long deletedId) throws
-            DeletingReferencedRecordException, ConnectionIssueException {
+            DeletingReferencedRecordException, DbConnectionIssueException {
         if (deletedId != null) {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement(AccountQueries.DELETE_BY_ID_QUERY)) {
@@ -124,7 +126,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
             } catch (SQLIntegrityConstraintViolationException e) {
                 throw new DeletingReferencedRecordException(e);
             } catch (SQLException e) {
-                throw new ConnectionIssueException(e);
+                throw new DbConnectionIssueException(e);
             }
         }
 

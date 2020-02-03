@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(50),
     account_status VARCHAR(15),
-    UNIQUE (email)
+    UNIQUE (email, account_status)
 );
 
 CREATE TABLE IF NOT EXISTS developers (
@@ -34,4 +34,8 @@ CREATE TABLE IF NOT EXISTS developer_skills (
     FOREIGN KEY (skill_id)
         REFERENCES skills (id)
 );
+
+ALTER TABLE developers ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE accounts ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE skills ALTER COLUMN id RESTART WITH 1;
 

@@ -1,5 +1,5 @@
-package ua.redrain47.hw11.repository.jdbc;
-import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+package ua.redrain47.hw11.repository;
+import ua.redrain47.hw11.exceptions.DbConnectionIssueException;
 import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Account;
@@ -7,7 +7,6 @@ import ua.redrain47.hw11.model.Developer;
 import ua.redrain47.hw11.model.Skill;
 import ua.redrain47.hw11.queries.DeveloperQueries;
 import ua.redrain47.hw11.queries.DeveloperSkillsQueries;
-import ua.redrain47.hw11.repository.DeveloperRepository;
 import ua.redrain47.hw11.util.ConnectionUtil;
 import ua.redrain47.hw11.util.ObjectMapper;
 
@@ -18,17 +17,21 @@ import java.util.Set;
 public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     private Connection connection;
 
-    public JdbcDeveloperRepositoryImpl() throws ConnectionIssueException {
+    public JdbcDeveloperRepositoryImpl() throws DbConnectionIssueException {
         try {
             connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
+    }
+
+    public JdbcDeveloperRepositoryImpl(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public boolean save(Developer newDeveloper)
-            throws SuchEntityAlreadyExistsException, ConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         if (newDeveloper != null) {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement(DeveloperQueries.INSERT_QUERY)) {
@@ -52,7 +55,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             } catch (SQLIntegrityConstraintViolationException e) {
                 throw new SuchEntityAlreadyExistsException(e);
             } catch (SQLException e) {
-                throw new ConnectionIssueException(e);
+                throw new DbConnectionIssueException(e);
             }
         }
 
@@ -60,7 +63,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public Developer getById(Long searchId) throws ConnectionIssueException {
+    public Developer getById(Long searchId) throws DbConnectionIssueException {
         if (searchId == null) {
             return null;
         }
@@ -82,12 +85,12 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
             return foundDeveloper;
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
     }
 
     @Override
-    public List<Developer> getAll() throws ConnectionIssueException {
+    public List<Developer> getAll() throws DbConnectionIssueException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperQueries.SELECT_ALL_QUERY)) {
 
@@ -100,13 +103,13 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
             return (developerList.size() != 0) ? developerList : null;
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
     }
 
     @Override
     public boolean update(Developer updatedDeveloper)
-            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+            throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         if (updatedDeveloper != null) {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement(DeveloperQueries.UPDATE_BY_ID_QUERY)) {
@@ -133,7 +136,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             } catch (SQLIntegrityConstraintViolationException e) {
                 throw new SuchEntityAlreadyExistsException(e);
             } catch (SQLException e) {
-                throw new ConnectionIssueException(e);
+                throw new DbConnectionIssueException(e);
             }
         }
 
@@ -143,7 +146,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     @Override
     public boolean deleteById(Long deletedId)
             throws DeletingReferencedRecordException,
-            ConnectionIssueException {
+            DbConnectionIssueException {
         if (deletedId == null) {
             return false;
         }
@@ -159,7 +162,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DeletingReferencedRecordException(e);
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
     }
 

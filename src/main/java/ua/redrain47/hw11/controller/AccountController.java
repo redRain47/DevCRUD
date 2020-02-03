@@ -1,6 +1,6 @@
 package ua.redrain47.hw11.controller;
 
-import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DbConnectionIssueException;
 import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Account;
@@ -11,29 +11,29 @@ import java.util.List;
 public class AccountController {
     private AccountService accountService = new AccountService();
 
-    public AccountController() throws ConnectionIssueException {
+    public AccountController() throws DbConnectionIssueException {
     }
 
-    public Account getDataById(Long id) throws ConnectionIssueException {
+    public Account getDataById(Long id) throws DbConnectionIssueException {
         return accountService.getDataById(id);
     }
 
-    public List<Account> getAllData() throws ConnectionIssueException {
+    public List<Account> getAllData() throws DbConnectionIssueException {
         return accountService.getAllData();
     }
 
     public boolean addData(Account addedAccount)
-            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+            throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         return accountService.addData(addedAccount);
     }
 
     public boolean updateDataById(Account updatedAccount)
-            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+            throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         return accountService.updateDataById(updatedAccount);
     }
 
     public boolean deleteDataById(Long id)  throws DeletingReferencedRecordException,
-            ConnectionIssueException {
+            DbConnectionIssueException {
         return accountService.deleteDataById(id);
     }
 }

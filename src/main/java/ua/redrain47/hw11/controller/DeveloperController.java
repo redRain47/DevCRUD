@@ -1,6 +1,6 @@
 package ua.redrain47.hw11.controller;
 
-import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DbConnectionIssueException;
 import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Developer;
@@ -11,30 +11,30 @@ import java.util.List;
 public class DeveloperController {
     private DeveloperService devRepo = new DeveloperService();
 
-    public DeveloperController() throws ConnectionIssueException {
+    public DeveloperController() throws DbConnectionIssueException {
     }
 
-    public Developer getDataById(Long id) throws ConnectionIssueException {
+    public Developer getDataById(Long id) throws DbConnectionIssueException {
         return devRepo.getDataById(id);
     }
 
-    public List<Developer> getAllData() throws ConnectionIssueException {
+    public List<Developer> getAllData() throws DbConnectionIssueException {
         return devRepo.getAllData();
     }
 
     public boolean addData(Developer addedDeveloper)
-            throws SuchEntityAlreadyExistsException, ConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         return devRepo.addData(addedDeveloper);
     }
 
     public boolean updateDataById(Developer updatedDeveloper)
-            throws ConnectionIssueException, SuchEntityAlreadyExistsException {
+            throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         return devRepo.updateDataById(updatedDeveloper);
     }
 
     public boolean deleteDataById(Long id)
             throws DeletingReferencedRecordException,
-            ConnectionIssueException {
+            DbConnectionIssueException {
         return devRepo.deleteDataById(id);
     }
 }

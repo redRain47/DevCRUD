@@ -1,8 +1,10 @@
 SET FOREIGN_KEY_CHECKS = 0;
+
 TRUNCATE TABLE developer_skills;
 TRUNCATE TABLE developers;
 TRUNCATE TABLE skills;
 TRUNCATE TABLE accounts;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO skills (name) VALUES 

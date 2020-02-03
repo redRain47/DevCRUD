@@ -1,11 +1,10 @@
-package ua.redrain47.hw11.repository.jdbc;
+package ua.redrain47.hw11.repository;
 
-import ua.redrain47.hw11.exceptions.ConnectionIssueException;
+import ua.redrain47.hw11.exceptions.DbConnectionIssueException;
 import ua.redrain47.hw11.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Skill;
 import ua.redrain47.hw11.queries.SkillQueries;
-import ua.redrain47.hw11.repository.SkillRepository;
 import ua.redrain47.hw11.util.ConnectionUtil;
 import ua.redrain47.hw11.util.ObjectMapper;
 
@@ -15,17 +14,17 @@ import java.util.List;
 public class JdbcSkillRepositoryImpl implements SkillRepository {
     private Connection connection;
 
-    public JdbcSkillRepositoryImpl() throws ConnectionIssueException {
+    public JdbcSkillRepositoryImpl() throws DbConnectionIssueException {
         try {
             connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
     }
 
     @Override
     public boolean save(Skill newSkill)
-            throws SuchEntityAlreadyExistsException, ConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         if (newSkill != null) {
             try ( PreparedStatement preparedStatement = connection
                     .prepareStatement(SkillQueries.INSERT_QUERY)) {
@@ -38,7 +37,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             } catch (SQLIntegrityConstraintViolationException e) {
                 throw new SuchEntityAlreadyExistsException(e);
             } catch (SQLException e) {
-                throw new ConnectionIssueException(e);
+                throw new DbConnectionIssueException(e);
             }
         }
 
@@ -46,7 +45,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     }
 
     @Override
-    public Skill getById(Long searchId) throws ConnectionIssueException {
+    public Skill getById(Long searchId) throws DbConnectionIssueException {
         if (searchId == null) {
             return null;
         }
@@ -65,12 +64,12 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
             return foundSkill;
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
     }
 
     @Override
-    public List<Skill> getAll() throws ConnectionIssueException {
+    public List<Skill> getAll() throws DbConnectionIssueException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.SELECT_ALL_QUERY)) {
 
@@ -79,13 +78,13 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
             return (skillList.size() != 0) ? skillList : null;
         } catch (SQLException e) {
-            throw new ConnectionIssueException(e);
+            throw new DbConnectionIssueException(e);
         }
     }
 
     @Override
     public boolean update(Skill updatedSkill)
-            throws SuchEntityAlreadyExistsException, ConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         if (updatedSkill != null) {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement(SkillQueries.UPDATE_BY_ID_QUERY)) {
@@ -98,7 +97,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             } catch (SQLIntegrityConstraintViolationException e) {
                 throw new SuchEntityAlreadyExistsException(e);
             } catch (SQLException e) {
-                throw new ConnectionIssueException(e);
+                throw new DbConnectionIssueException(e);
             }
         }
 
@@ -108,7 +107,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     @Override
     public boolean deleteById(Long deletedId)
             throws DeletingReferencedRecordException,
-            ConnectionIssueException {
+            DbConnectionIssueException {
         if (deletedId != null) {
             try (PreparedStatement preparedStatement = connection
                     .prepareStatement(SkillQueries.DELETE_BY_ID_QUERY)) {
@@ -121,7 +120,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
             } catch (SQLIntegrityConstraintViolationException e) {
                 throw new DeletingReferencedRecordException(e);
             } catch (SQLException e) {
-                throw new ConnectionIssueException(e);
+                throw new DbConnectionIssueException(e);
             }
         }
 
