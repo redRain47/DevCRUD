@@ -140,15 +140,7 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>${liquibase.version}</version>
                 <configuration>
-                    <changeLogFile>
-                        src/main/resources/liquibase/changelog.xml
-                    </changeLogFile>
-                    <driver>com.mysql.jdbc.Driver</driver>
-                    <url>
-                        jdbc:mysql://localhost:3306/epam_study?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC
-                    </url>
-                    <username>root</username>
-                    <password></password> <!--12345-->
+                    <propertyFile>src/main/resources/liquibase/liquibase.properties</propertyFile>
                 </configuration>
                 <executions>
                     <execution>
