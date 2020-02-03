@@ -7,6 +7,10 @@ TRUNCATE TABLE accounts;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+ALTER TABLE developers AUTO_INCREMENT = 1;
+ALTER TABLE accounts AUTO_INCREMENT = 1;
+ALTER TABLE skills AUTO_INCREMENT = 1;
+
 INSERT INTO skills (name) VALUES 
 ('Java'), 
 ('C++'), 
