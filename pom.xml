@@ -141,7 +141,7 @@
                 <version>${liquibase.version}</version>
                 <configuration>
                     <changeLogFile>
-                        liquibase/changelog.xml
+                        src/main/resources/liquibase/changelog.xml
                     </changeLogFile>
                     <driver>com.mysql.jdbc.Driver</driver>
                     <url>
