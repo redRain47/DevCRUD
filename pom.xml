@@ -148,7 +148,7 @@
                         jdbc:mysql://localhost:3306/epam_study?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC
                     </url>
                     <username>root</username>
-                    <password>12345</password>
+                    <password></password> <!--12345-->
                 </configuration>
                 <executions>
                     <execution>
