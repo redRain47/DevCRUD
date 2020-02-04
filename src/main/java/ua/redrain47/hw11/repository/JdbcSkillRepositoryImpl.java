@@ -22,6 +22,10 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
         }
     }
 
+    public JdbcSkillRepositoryImpl(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public boolean save(Skill newSkill)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
