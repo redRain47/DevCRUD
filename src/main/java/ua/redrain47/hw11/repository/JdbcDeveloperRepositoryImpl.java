@@ -49,7 +49,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
                 }
 
                 preparedStatement.execute();
-                insertDeveloperSkills(newDeveloper);
+                insertDeveloperSkills(newDeveloper, false);
 
                 return true;
             } catch (SQLIntegrityConstraintViolationException e) {
@@ -80,7 +80,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             if (developerList != null && developerList.size() != 0) {
                 foundDeveloper = developerList.get(0);
                 setDeveloperSkillSet(foundDeveloper);
-                // TODO: add account setting
+                setDeveloperAccount(foundDeveloper);
             }
 
             return foundDeveloper;
@@ -99,6 +99,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
             for (Developer developer : developerList) {
                 setDeveloperSkillSet(developer);
+                setDeveloperAccount(developer);
             }
 
             return (developerList.size() != 0) ? developerList : null;
@@ -130,7 +131,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
                 preparedStatement.execute();
 
                 deleteAllDeveloperSkills(updatedDeveloper.getId());
-                insertDeveloperSkills(updatedDeveloper);
+                insertDeveloperSkills(updatedDeveloper, true);
 
                 return true;
             } catch (SQLIntegrityConstraintViolationException e) {
@@ -166,14 +167,16 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         }
     }
 
-    private void insertDeveloperSkills(Developer developer)
+    private void insertDeveloperSkills(Developer developer, boolean update)
             throws SQLException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperSkillsQueries
                         .INSERT_DEVELOPER_SKILLS_QUERY)) {
 
             Set<Skill> devSkillSet = developer.getSkillSet();
-            int intDeveloperId = selectDeveloperId(developer).intValue();
+            int intDeveloperId = (update)
+                    ? developer.getId().intValue()
+                    : selectDeveloperId(developer).intValue();
 
             for (Skill skill : devSkillSet) {
                 preparedStatement.setInt(1, intDeveloperId);
@@ -226,6 +229,18 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
             Set<Skill> skillSet = ObjectMapper.mapToSkillSet(devSkillsResultSet);
 
             developer.setSkillSet(skillSet);
+        }
+    }
+
+    private void setDeveloperAccount(Developer developer)
+            throws DbConnectionIssueException {
+        Account developerAccount = developer.getAccount();
+
+        if (developerAccount != null) {
+            AccountRepository accountRepo =
+                    new JdbcAccountRepositoryImpl(connection);
+            developer.setAccount((accountRepo
+                    .getById(developerAccount.getId())));
         }
     }
 }

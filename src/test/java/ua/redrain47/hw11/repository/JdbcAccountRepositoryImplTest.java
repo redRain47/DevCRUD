@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 public class JdbcAccountRepositoryImplTest {
     private AccountRepository accountRepo;
     private DeveloperRepository developerRepo; // to delete referenced rows
-    // Initialize and population sql scripts of test db is located at "resources/db/"
     private TempDbManager tempDbManager;
     private Connection connection;
 
