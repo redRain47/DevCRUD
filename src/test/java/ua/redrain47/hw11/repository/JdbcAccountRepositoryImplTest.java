@@ -1,5 +1,6 @@
 package ua.redrain47.hw11.repository;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ua.redrain47.hw11.exceptions.DbConnectionIssueException;
@@ -10,9 +11,7 @@ import ua.redrain47.hw11.model.AccountStatus;
 import ua.redrain47.hw11.test_util.H2ConnectionUtil;
 import ua.redrain47.hw11.test_util.TempDbManager;
 
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,19 +22,21 @@ public class JdbcAccountRepositoryImplTest {
     private DeveloperRepository developerRepo; // to delete referenced rows
     // Initialize and population sql scripts of test db is located at "resources/db/"
     private TempDbManager tempDbManager;
+    private Connection connection;
 
-    public JdbcAccountRepositoryImplTest() throws SQLException, IOException {
-        Connection connection = H2ConnectionUtil.getConnection();
-
+    @Before
+    public void setUp() throws Exception {
+        connection = H2ConnectionUtil.getConnection();
         accountRepo = new JdbcAccountRepositoryImpl(connection);
         developerRepo = new JdbcDeveloperRepositoryImpl(connection);
         tempDbManager = new TempDbManager(connection);
         tempDbManager.createDatabase();
+        tempDbManager.populateDatabase();
     }
 
-    @Before
-    public void setUp() throws Exception {
-        tempDbManager.populateDatabase();
+    @After
+    public void tearDown() throws Exception {
+        connection.close();
     }
 
     @Test
