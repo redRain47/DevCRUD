@@ -105,12 +105,12 @@ public class JdbcDeveloperRepositoryImplTest {
 
     @Test
     public void shouldUpdate() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
-        Developer updatedSkill = developerRepo.getById(1L);
+        Developer updatedDeveloper = developerRepo.getById(1L);
 
-        updatedSkill.setLastName("Sins");
-        developerRepo.update(updatedSkill);
+        updatedDeveloper.setLastName("Sins");
+        developerRepo.update(updatedDeveloper);
 
-        assertEquals(updatedSkill, developerRepo.getById(1L));
+        assertEquals(updatedDeveloper, developerRepo.getById(1L));
     }
 
     @Test(expected = SuchEntityAlreadyExistsException.class)
