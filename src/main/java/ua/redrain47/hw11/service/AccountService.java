@@ -25,6 +25,10 @@ public class AccountService {
         }
     }
 
+    public AccountService(AccountRepository accountRepo) {
+        this.accountRepo = accountRepo;
+    }
+
     public Account getDataById(Long id) throws DbConnectionIssueException {
         try {
             Account account = accountRepo.getById(id);

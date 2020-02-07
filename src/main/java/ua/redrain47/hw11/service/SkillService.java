@@ -24,6 +24,10 @@ public class SkillService {
         }
     }
 
+    public SkillService(SkillRepository skillRepo) {
+        this.skillRepo = skillRepo;
+    }
+
     public Skill getDataById(Long id) throws DbConnectionIssueException {
         try {
             Skill skill = skillRepo.getById(id);

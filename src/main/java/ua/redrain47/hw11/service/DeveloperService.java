@@ -23,6 +23,10 @@ public class DeveloperService {
         }
     }
 
+    public DeveloperService(DeveloperRepository developerRepo) {
+        this.developerRepo = developerRepo;
+    }
+
     public Developer getDataById(Long id) throws DbConnectionIssueException {
         try {
             Developer developer = developerRepo.getById(id);
