@@ -49,12 +49,11 @@ public class DeveloperService {
         }
     }
 
-    public boolean addData(Developer addedDeveloper)
+    public void addData(Developer addedDeveloper)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         try {
-            boolean result = developerRepo.save(addedDeveloper);
+            developerRepo.save(addedDeveloper);
             log.debug("Added data");
-            return result;
         } catch (SuchEntityAlreadyExistsException e) {
             log.warn(e.getMessage());
             throw e;
@@ -64,12 +63,11 @@ public class DeveloperService {
         }
     }
 
-    public boolean updateDataById(Developer updatedDeveloper)
+    public void updateDataById(Developer updatedDeveloper)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         try {
-            boolean result = developerRepo.update(updatedDeveloper);
+            developerRepo.update(updatedDeveloper);
             log.debug("Updated data by id");
-            return result;
         } catch (SuchEntityAlreadyExistsException e) {
             log.warn(e.getMessage());
             throw e;
@@ -79,13 +77,12 @@ public class DeveloperService {
         }
     }
 
-    public boolean deleteDataById(Long id)
+    public void deleteDataById(Long id)
             throws DeletingReferencedRecordException,
             DbConnectionIssueException {
         try {
             developerRepo.deleteById(id);
             log.debug("Deleted data by id");
-            return true;
         } catch (DeletingReferencedRecordException e) {
             log.warn(e.getMessage());
             throw e;

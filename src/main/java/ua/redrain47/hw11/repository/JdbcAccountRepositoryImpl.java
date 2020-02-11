@@ -27,27 +27,21 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public boolean save(Account newAccount)
+    public void save(Account newAccount)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
-        if (newAccount != null) {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement(AccountQueries.INSERT_QUERY)) {
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(AccountQueries.INSERT_QUERY)) {
 
-                preparedStatement.setString(1, newAccount.getEmail());
-                preparedStatement.setString(2,
-                        newAccount.getAccountStatus().toString());
+            preparedStatement.setString(1, newAccount.getEmail());
+            preparedStatement.setString(2,
+                    newAccount.getAccountStatus().toString());
 
-                preparedStatement.execute();
-
-                return true;
-            } catch (SQLIntegrityConstraintViolationException e) {
-                throw new SuchEntityAlreadyExistsException(e);
-            } catch (SQLException e) {
-                throw new DbConnectionIssueException(e);
-            }
+            preparedStatement.execute();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new SuchEntityAlreadyExistsException(e);
+        } catch (SQLException e) {
+            throw new DbConnectionIssueException(e);
         }
-
-        return false;
     }
 
     @Override
@@ -90,46 +84,34 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public boolean update(Account updatedAccount)
+    public void update(Account updatedAccount)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
-        if (updatedAccount != null) {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement(AccountQueries.UPDATE_BY_ID_QUERY)) {
-                preparedStatement.setString(1, updatedAccount.getEmail());
-                preparedStatement.setString(2,
-                        updatedAccount.getAccountStatus().toString());
-                preparedStatement.setInt(3, updatedAccount.getId().intValue());
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(AccountQueries.UPDATE_BY_ID_QUERY)) {
+            preparedStatement.setString(1, updatedAccount.getEmail());
+            preparedStatement.setString(2,
+                    updatedAccount.getAccountStatus().toString());
+            preparedStatement.setInt(3, updatedAccount.getId().intValue());
 
-                preparedStatement.execute();
-
-                return true;
-            } catch (SQLIntegrityConstraintViolationException e) {
-                throw new SuchEntityAlreadyExistsException(e);
-            } catch (SQLException e) {
-                throw new DbConnectionIssueException(e);
-            }
+            preparedStatement.execute();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new SuchEntityAlreadyExistsException(e);
+        } catch (SQLException e) {
+            throw new DbConnectionIssueException(e);
         }
-
-        return false;
     }
 
     @Override
-    public boolean deleteById(Long deletedId) throws
+    public void deleteById(Long deletedId) throws
             DeletingReferencedRecordException, DbConnectionIssueException {
-        if (deletedId != null) {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement(AccountQueries.DELETE_BY_ID_QUERY)) {
-                preparedStatement.setInt(1, deletedId.intValue());
-                preparedStatement.execute();
-
-                return true;
-            } catch (SQLIntegrityConstraintViolationException e) {
-                throw new DeletingReferencedRecordException(e);
-            } catch (SQLException e) {
-                throw new DbConnectionIssueException(e);
-            }
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(AccountQueries.DELETE_BY_ID_QUERY)) {
+            preparedStatement.setInt(1, deletedId.intValue());
+            preparedStatement.execute();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new DeletingReferencedRecordException(e);
+        } catch (SQLException e) {
+            throw new DbConnectionIssueException(e);
         }
-
-        return false;
     }
 }

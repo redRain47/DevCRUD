@@ -50,12 +50,11 @@ public class SkillService {
         }
     }
 
-    public boolean addData(Skill addedSkill)
+    public void addData(Skill addedSkill)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         try {
             skillRepo.save(addedSkill);
             log.debug("Added data");
-            return true;
         } catch (SuchEntityAlreadyExistsException e) {
             log.warn(e.getMessage());
             throw e;
@@ -65,12 +64,11 @@ public class SkillService {
         }
     }
 
-    public boolean updateDataById(Skill updatedSkill)
+    public void updateDataById(Skill updatedSkill)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         try {
             skillRepo.update(updatedSkill);
             log.debug("Updated data by id");
-            return true;
         } catch (SuchEntityAlreadyExistsException e) {
             log.warn(e.getMessage());
             throw e;
@@ -80,13 +78,12 @@ public class SkillService {
         }
     }
 
-    public boolean deleteDataById(Long id)
+    public void deleteDataById(Long id)
             throws DeletingReferencedRecordException,
             DbConnectionIssueException {
         try {
             skillRepo.deleteById(id);
             log.debug("Deleted data by id");
-            return true;
         } catch (DeletingReferencedRecordException e) {
             log.warn(e.getMessage());
             throw e;

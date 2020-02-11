@@ -27,25 +27,18 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     }
 
     @Override
-    public boolean save(Skill newSkill)
+    public void save(Skill newSkill)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
-        if (newSkill != null) {
-            try ( PreparedStatement preparedStatement = connection
-                    .prepareStatement(SkillQueries.INSERT_QUERY)) {
-                preparedStatement.setString(1, newSkill.getName());
+        try ( PreparedStatement preparedStatement = connection
+                .prepareStatement(SkillQueries.INSERT_QUERY)) {
+            preparedStatement.setString(1, newSkill.getName());
 
-                preparedStatement.execute();
-                preparedStatement.close();
-
-                return true;
-            } catch (SQLIntegrityConstraintViolationException e) {
-                throw new SuchEntityAlreadyExistsException(e);
-            } catch (SQLException e) {
-                throw new DbConnectionIssueException(e);
-            }
+            preparedStatement.execute();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new SuchEntityAlreadyExistsException(e);
+        } catch (SQLException e) {
+            throw new DbConnectionIssueException(e);
         }
-
-        return false;
     }
 
     @Override
@@ -87,47 +80,34 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     }
 
     @Override
-    public boolean update(Skill updatedSkill)
+    public void update(Skill updatedSkill)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
-        if (updatedSkill != null) {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement(SkillQueries.UPDATE_BY_ID_QUERY)) {
-                preparedStatement.setString(1, updatedSkill.getName());
-                preparedStatement.setInt(2, updatedSkill.getId().intValue());
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(SkillQueries.UPDATE_BY_ID_QUERY)) {
+            preparedStatement.setString(1, updatedSkill.getName());
+            preparedStatement.setInt(2, updatedSkill.getId().intValue());
 
-                preparedStatement.execute();
-
-                return true;
-            } catch (SQLIntegrityConstraintViolationException e) {
-                throw new SuchEntityAlreadyExistsException(e);
-            } catch (SQLException e) {
-                throw new DbConnectionIssueException(e);
-            }
+            preparedStatement.execute();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new SuchEntityAlreadyExistsException(e);
+        } catch (SQLException e) {
+            throw new DbConnectionIssueException(e);
         }
-
-        return false;
     }
 
     @Override
-    public boolean deleteById(Long deletedId)
+    public void deleteById(Long deletedId)
             throws DeletingReferencedRecordException,
             DbConnectionIssueException {
-        if (deletedId != null) {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement(SkillQueries.DELETE_BY_ID_QUERY)) {
-                preparedStatement.setInt(1, deletedId.intValue());
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(SkillQueries.DELETE_BY_ID_QUERY)) {
+            preparedStatement.setInt(1, deletedId.intValue());
 
-                preparedStatement.execute();
-                preparedStatement.close();
-
-                return true;
-            } catch (SQLIntegrityConstraintViolationException e) {
-                throw new DeletingReferencedRecordException(e);
-            } catch (SQLException e) {
-                throw new DbConnectionIssueException(e);
-            }
+            preparedStatement.execute();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new DeletingReferencedRecordException(e);
+        } catch (SQLException e) {
+            throw new DbConnectionIssueException(e);
         }
-
-        return false;
     }
 }

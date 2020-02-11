@@ -30,36 +30,30 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public boolean save(Developer newDeveloper)
+    public void save(Developer newDeveloper)
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
-        if (newDeveloper != null) {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement(DeveloperQueries.INSERT_QUERY)) {
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(DeveloperQueries.INSERT_QUERY)) {
 
-                preparedStatement.setString(1, newDeveloper.getFirstName());
-                preparedStatement.setString(2, newDeveloper.getLastName());
+            preparedStatement.setString(1, newDeveloper.getFirstName());
+            preparedStatement.setString(2, newDeveloper.getLastName());
 
-                Account account = newDeveloper.getAccount();
+            Account account = newDeveloper.getAccount();
 
-                if (account != null) {
-                    preparedStatement.setInt(3,
-                            account.getId().intValue());
-                } else {
-                    preparedStatement.setNull(3, Types.NULL);
-                }
-
-                preparedStatement.execute();
-                insertDeveloperSkills(newDeveloper, false);
-
-                return true;
-            } catch (SQLIntegrityConstraintViolationException e) {
-                throw new SuchEntityAlreadyExistsException(e);
-            } catch (SQLException e) {
-                throw new DbConnectionIssueException(e);
+            if (account != null) {
+                preparedStatement.setInt(3,
+                        account.getId().intValue());
+            } else {
+                preparedStatement.setNull(3, Types.NULL);
             }
-        }
 
-        return false;
+            preparedStatement.execute();
+            insertDeveloperSkills(newDeveloper, false);
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new SuchEntityAlreadyExistsException(e);
+        } catch (SQLException e) {
+            throw new DbConnectionIssueException(e);
+        }
     }
 
     @Override
@@ -109,57 +103,45 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public boolean update(Developer updatedDeveloper)
+    public void update(Developer updatedDeveloper)
             throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
-        if (updatedDeveloper != null) {
-            try (PreparedStatement preparedStatement = connection
-                    .prepareStatement(DeveloperQueries.UPDATE_BY_ID_QUERY)) {
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(DeveloperQueries.UPDATE_BY_ID_QUERY)) {
 
-                preparedStatement.setString(1, updatedDeveloper.getFirstName());
-                preparedStatement.setString(2, updatedDeveloper.getLastName());
+            preparedStatement.setString(1, updatedDeveloper.getFirstName());
+            preparedStatement.setString(2, updatedDeveloper.getLastName());
 
-                Account developerAccount = updatedDeveloper.getAccount();
+            Account developerAccount = updatedDeveloper.getAccount();
 
-                if (developerAccount != null) {
-                    preparedStatement.setInt(3, developerAccount.getId()
-                            .intValue());
-                } else {
-                    preparedStatement.setNull(3, Types.NULL);
-                }
-
-                preparedStatement.setInt(4, updatedDeveloper.getId().intValue());
-                preparedStatement.execute();
-
-                deleteAllDeveloperSkills(updatedDeveloper.getId());
-                insertDeveloperSkills(updatedDeveloper, true);
-
-                return true;
-            } catch (SQLIntegrityConstraintViolationException e) {
-                throw new SuchEntityAlreadyExistsException(e);
-            } catch (SQLException e) {
-                throw new DbConnectionIssueException(e);
+            if (developerAccount != null) {
+                preparedStatement.setInt(3, developerAccount.getId()
+                        .intValue());
+            } else {
+                preparedStatement.setNull(3, Types.NULL);
             }
-        }
 
-        return false;
+            preparedStatement.setInt(4, updatedDeveloper.getId().intValue());
+            preparedStatement.execute();
+
+            deleteAllDeveloperSkills(updatedDeveloper.getId());
+            insertDeveloperSkills(updatedDeveloper, true);
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new SuchEntityAlreadyExistsException(e);
+        } catch (SQLException e) {
+            throw new DbConnectionIssueException(e);
+        }
     }
 
     @Override
-    public boolean deleteById(Long deletedId)
+    public void deleteById(Long deletedId)
             throws DeletingReferencedRecordException,
             DbConnectionIssueException {
-        if (deletedId == null) {
-            return false;
-        }
-
         try (PreparedStatement  preparedStatement = connection
                 .prepareStatement(DeveloperQueries.DELETE_BY_ID_QUERY)) {
             deleteAllDeveloperSkills(deletedId);
 
             preparedStatement.setInt(1, deletedId.intValue());
             preparedStatement.execute();
-
-            return true;
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DeletingReferencedRecordException(e);
         } catch (SQLException e) {
@@ -199,11 +181,8 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
                         .SELECT_LAST_INSERT_ID)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            long id = (resultSet.next())
-                    ? resultSet.getInt("id")
-                    : 0L;
 
-            return id;
+            return (!resultSet.next()) ? 0L : resultSet.getInt("id");
         }
     }
 

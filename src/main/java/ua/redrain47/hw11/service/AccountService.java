@@ -50,12 +50,11 @@ public class AccountService {
         }
     }
 
-    public boolean addData(Account addedAccount)
+    public void addData(Account addedAccount)
             throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         try {
             accountRepo.save(addedAccount);
             log.debug("Added data");
-            return true;
         } catch (SuchEntityAlreadyExistsException e) {
             log.warn(e.getMessage());
             throw e;
@@ -65,12 +64,11 @@ public class AccountService {
         }
     }
 
-    public boolean updateDataById(Account updatedAccount)
+    public void updateDataById(Account updatedAccount)
             throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         try {
             accountRepo.update(updatedAccount);
             log.debug("Updated data by id");
-            return true;
         } catch (SuchEntityAlreadyExistsException e) {
             log.warn(e.getMessage());
             throw e;
@@ -80,13 +78,12 @@ public class AccountService {
         }
     }
 
-    public boolean deleteDataById(Long id)
+    public void deleteDataById(Long id)
             throws DeletingReferencedRecordException,
             DbConnectionIssueException {
         try {
             accountRepo.deleteById(id);
             log.debug("Deleted data by id");
-            return true;
         } catch (DeletingReferencedRecordException e) {
             log.warn(e.getMessage());
             throw e;
