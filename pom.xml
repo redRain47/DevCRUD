@@ -6,9 +6,10 @@
 
     <groupId>ua.redrain47.hw11</groupId>
     <artifactId>EpamHW_11</artifactId>
-<!--    TODO: change to release version-->
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-RELEASE</version>
     <packaging>war</packaging>
+
+    <name>DevCRUD</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -34,18 +35,21 @@
     </properties>
 
     <dependencies>
+        <!-- MySQL -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.connector.java.version}</version>
         </dependency>
 
+        <!-- DBCP2 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
             <version>${commons.dbcp2.version}</version>
         </dependency>
 
+        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -53,6 +57,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- H2 in-memory database -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -60,18 +65,21 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- MyBatis -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>${mybatis.version}</version>
         </dependency>
 
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
 
+        <!-- Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -79,6 +87,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Logback -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -86,6 +95,7 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- Liquibase -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
@@ -98,6 +108,7 @@
             <version>${liquibase.version}</version>
         </dependency>
 
+        <!-- Servlets -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -105,6 +116,7 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Tomcat -->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
@@ -135,19 +147,21 @@
             <version>${tomcat.version}</version>
         </dependency>
 
-<!--        TODO: write explaining comments-->
-
+        <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
 
+        <!-- JSTL -->
         <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
             <version>${jstl.version}</version>
         </dependency>
+
+        <!-- TagLibs -->
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
@@ -157,6 +171,7 @@
 
     <build>
         <plugins>
+            <!-- Liquibase -->
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
@@ -174,6 +189,7 @@
                 </executions>
             </plugin>
 
+            <!-- Maven -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -184,6 +200,7 @@
                 </configuration>
             </plugin>
 
+            <!-- App Assembler -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>appassembler-maven-plugin</artifactId>
