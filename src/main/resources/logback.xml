@@ -19,7 +19,7 @@
         </filter>
     </appender>
 
-    <logger name="ua.epam" level="TRACE">
+    <logger name="ua.redrain47" level="TRACE">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>

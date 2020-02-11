@@ -6,6 +6,7 @@
 
     <groupId>ua.redrain47.hw11</groupId>
     <artifactId>EpamHW_11</artifactId>
+<!--    TODO: change to release version-->
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -134,11 +135,7 @@
             <version>${tomcat.version}</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.apache.tomcat.maven</groupId>-->
-            <!--<artifactId>tomcat7-maven-plugin</artifactId>-->
-            <!--<version>${tomcat.maven.plugin.version}</version>-->
-        <!--</dependency>-->
+<!--        TODO: write explaining comments-->
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -187,17 +184,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Tomcat plugin -->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>${tomcat.maven.plugin.version}</version>
-                <configuration>
-                    <path>/</path>
-                    <port>8080</port>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>appassembler-maven-plugin</artifactId>
@@ -206,7 +192,7 @@
                     <assembleDirectory>target</assembleDirectory>
                     <programs>
                         <program>
-                            <mainClass>ua.redrain47.hw11.WebAppRunner</mainClass>
+                            <mainClass>ua.redrain47.devcrud.WebAppRunner</mainClass>
                             <name>webapp</name>
                         </program>
                     </programs>
