@@ -17,9 +17,9 @@ public class SkillService {
     public SkillService() throws DbConnectionIssueException {
         try {
             this.skillRepo = new JdbcSkillRepositoryImpl();
-            log.debug("SkillService -> Instance created");
+            log.debug("Instance created");
         } catch (DbConnectionIssueException e) {
-            log.error("SkillService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -31,10 +31,10 @@ public class SkillService {
     public Skill getDataById(Long id) throws DbConnectionIssueException {
         try {
             Skill skill = skillRepo.getById(id);
-            log.debug("SkillService -> Got data by id");
+            log.debug("Got data by id");
             return skill;
         } catch (DbConnectionIssueException e) {
-            log.error("SkillService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -42,10 +42,10 @@ public class SkillService {
     public List<Skill> getAllData() throws DbConnectionIssueException {
         try {
             List<Skill> skillList = skillRepo.getAll();
-            log.debug("SkillService -> Got all data");
+            log.debug("Got all data");
             return skillList;
         } catch (DbConnectionIssueException e) {
-            log.error("SkillService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -54,11 +54,13 @@ public class SkillService {
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         try {
             skillRepo.save(addedSkill);
-            log.debug("SkillService -> Added data");
+            log.debug("Added data");
             return true;
-        } catch (SuchEntityAlreadyExistsException
-                | DbConnectionIssueException e) {
-            log.error("SkillService -> " + e);
+        } catch (SuchEntityAlreadyExistsException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -67,11 +69,13 @@ public class SkillService {
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         try {
             skillRepo.update(updatedSkill);
-            log.debug("SkillService -> Updated data by id");
+            log.debug("Updated data by id");
             return true;
-        } catch (SuchEntityAlreadyExistsException
-                | DbConnectionIssueException e) {
-            log.error("SkillService -> " + e);
+        } catch (SuchEntityAlreadyExistsException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -81,11 +85,13 @@ public class SkillService {
             DbConnectionIssueException {
         try {
             skillRepo.deleteById(id);
-            log.debug("SkillService -> Deleted data by id");
+            log.debug("Deleted data by id");
             return true;
-        } catch (DeletingReferencedRecordException
-                | DbConnectionIssueException e) {
-            log.error("SkillService -> " + e);
+        } catch (DeletingReferencedRecordException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }

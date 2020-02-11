@@ -17,10 +17,9 @@ public class AccountService {
     public AccountService() throws DbConnectionIssueException {
         try {
             accountRepo = new JdbcAccountRepositoryImpl();
-            log.debug("AccountService -> Instance created");
+            log.debug("Instance created");
         } catch (DbConnectionIssueException e) {
-            // TODO: split handling of connection issue (error) from other issue (warn)
-            log.error("AccountService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -32,10 +31,10 @@ public class AccountService {
     public Account getDataById(Long id) throws DbConnectionIssueException {
         try {
             Account account = accountRepo.getById(id);
-            log.debug("AccountService -> Got data by id");
+            log.debug("Got data by id");
             return account;
         } catch (DbConnectionIssueException e) {
-            log.error("AccountService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -43,10 +42,10 @@ public class AccountService {
     public List<Account> getAllData() throws DbConnectionIssueException {
         try {
             List<Account> accountList = accountRepo.getAll();
-            log.debug("AccountService -> Got all data");
+            log.debug("Got all data");
             return accountList;
         } catch (DbConnectionIssueException e) {
-            log.error("AccountService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -55,11 +54,13 @@ public class AccountService {
             throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         try {
             accountRepo.save(addedAccount);
-            log.debug("AccountService -> Added data");
+            log.debug("Added data");
             return true;
-        } catch (SuchEntityAlreadyExistsException
-                | DbConnectionIssueException e) {
-            log.error("AccountService -> " + e);
+        } catch (SuchEntityAlreadyExistsException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -68,11 +69,13 @@ public class AccountService {
             throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         try {
             accountRepo.update(updatedAccount);
-            log.debug("AccountService -> Updated data by id");
+            log.debug("Updated data by id");
             return true;
-        } catch (SuchEntityAlreadyExistsException
-                | DbConnectionIssueException e) {
-            log.error("AccountService -> " + e);
+        } catch (SuchEntityAlreadyExistsException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -82,11 +85,13 @@ public class AccountService {
             DbConnectionIssueException {
         try {
             accountRepo.deleteById(id);
-            log.debug("AccountService -> Deleted data by id");
+            log.debug("Deleted data by id");
             return true;
-        } catch (DeletingReferencedRecordException
-                | DbConnectionIssueException e) {
-            log.error("AccountService -> " + e);
+        } catch (DeletingReferencedRecordException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }

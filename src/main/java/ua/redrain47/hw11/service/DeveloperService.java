@@ -16,9 +16,9 @@ public class DeveloperService {
     public DeveloperService() throws DbConnectionIssueException {
         try {
             this.developerRepo = new JdbcDeveloperRepositoryImpl();
-            log.debug("DeveloperService -> Instance created");
+            log.debug("Instance created");
         } catch (DbConnectionIssueException e) {
-            log.error("DeveloperService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -30,10 +30,10 @@ public class DeveloperService {
     public Developer getDataById(Long id) throws DbConnectionIssueException {
         try {
             Developer developer = developerRepo.getById(id);
-            log.debug("DeveloperService -> Got data by id");
+            log.debug("Got data by id");
             return developer;
         } catch (DbConnectionIssueException e) {
-            log.error("DeveloperService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -41,10 +41,10 @@ public class DeveloperService {
     public List<Developer> getAllData() throws DbConnectionIssueException {
         try {
             List<Developer> developerList = developerRepo.getAll();
-            log.debug("DeveloperService -> Got all data");
+            log.debug("Got all data");
             return developerList;
         } catch (DbConnectionIssueException e) {
-            log.error("DeveloperService -> " + e);
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -53,11 +53,13 @@ public class DeveloperService {
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         try {
             boolean result = developerRepo.save(addedDeveloper);
-            log.debug("DeveloperService -> Added data");
+            log.debug("Added data");
             return result;
-        } catch (SuchEntityAlreadyExistsException
-                | DbConnectionIssueException e) {
-            log.error("DeveloperService -> " + e);
+        } catch (SuchEntityAlreadyExistsException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -66,11 +68,13 @@ public class DeveloperService {
             throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
         try {
             boolean result = developerRepo.update(updatedDeveloper);
-            log.debug("DeveloperService -> Updated data by id");
+            log.debug("Updated data by id");
             return result;
-        } catch (SuchEntityAlreadyExistsException
-                | DbConnectionIssueException e) {
-            log.error("DeveloperService -> " + e);
+        } catch (SuchEntityAlreadyExistsException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }
@@ -80,11 +84,13 @@ public class DeveloperService {
             DbConnectionIssueException {
         try {
             developerRepo.deleteById(id);
-            log.debug("DeveloperService -> Deleted data by id");
+            log.debug("Deleted data by id");
             return true;
-        } catch (DeletingReferencedRecordException
-                | DbConnectionIssueException e) {
-            log.error("DeveloperService -> " + e);
+        } catch (DeletingReferencedRecordException e) {
+            log.warn(e.getMessage());
+            throw e;
+        } catch (DbConnectionIssueException e) {
+            log.error(e.getMessage());
             throw e;
         }
     }
