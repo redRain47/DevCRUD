@@ -10,14 +10,14 @@ import ua.redrain47.hw11.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.hw11.model.Skill;
 import ua.redrain47.hw11.service.SkillService;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import static ua.redrain47.hw11.messages.ResponseMessages.*;
 
 @Slf4j
 @WebServlet(name = "SkillServlet", urlPatterns = "/api/v1/skills")
@@ -55,8 +55,7 @@ public class SkillServlet extends HttpServlet {
                     return;
                 default:
                     log.warn("Invalid parameter type in POST request");
-                    // TODO: move error codes to separate entity
-                    response.sendError(400, "Invalid parameter type");
+                    response.sendError(400, INVALID_PARAMETER_TYPE_TEXT);
             }
         }
 
@@ -68,14 +67,14 @@ public class SkillServlet extends HttpServlet {
             if (isValidSkill(skill)) {
                 skillService.addData(skill);
             } else {
-                response.sendError(400, "Invalid request body");
+                response.sendError(400, INVALID_REQUEST_BODY_TEXT);
             }
         } catch (DbConnectionIssueException e) {
             response.sendError(506, e.getMessage());
         } catch (SuchEntityAlreadyExistsException e) {
             response.sendError(419, e.getMessage());
         } catch (JsonIOException | JsonSyntaxException e) {
-            response.sendError(400, "Json parsing error");
+            response.sendError(400, JSON_PARSING_ERROR_TEXT);
         }
     }
 
@@ -116,21 +115,21 @@ public class SkillServlet extends HttpServlet {
                     Skill.class);
 
             if (!isValidSkill(skill)) {
-                response.sendError(400, "Invalid request body");
+                response.sendError(400, INVALID_REQUEST_BODY_TEXT);
                 return;
             }
 
             if (skillService.getDataById(skill.getId()) != null) {
                 skillService.updateDataById(skill);
             } else {
-                response.sendError(400, "Such id doesn't exist");
+                response.sendError(400, NO_SUCH_ID_TEXT);
             }
         } catch (DbConnectionIssueException e) {
             response.sendError(506, e.getMessage());
         } catch (SuchEntityAlreadyExistsException e) {
             response.sendError(400, e.getMessage());
         } catch (JsonIOException | JsonSyntaxException e) {
-            response.sendError(400, "Json parsing error");
+            response.sendError(400, JSON_PARSING_ERROR_TEXT);
         }
     }
 
@@ -143,7 +142,7 @@ public class SkillServlet extends HttpServlet {
             if (request.getParameter("id") == null
                     || !request.getParameter("id").matches("\\d+")) {
                 log.warn("Invalid id parameter in DELETE request");
-                response.sendError(400, "Invalid ID parameter");
+                response.sendError(400, INVALID_ID_PARAMETER_TEXT);
             } else {
                 Long deletedId = Long.parseLong(request
                         .getParameter("id"));
@@ -151,7 +150,7 @@ public class SkillServlet extends HttpServlet {
                 if (skillService.getDataById(deletedId) != null) {
                     skillService.deleteDataById(deletedId);
                 } else {
-                    response.sendError(400, "Such id doesn't exist");
+                    response.sendError(400, NO_SUCH_ID_TEXT);
                 }
             }
         } catch (DeletingReferencedRecordException e) {

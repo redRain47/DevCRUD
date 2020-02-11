@@ -23,6 +23,8 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
+import static ua.redrain47.hw11.messages.ResponseMessages.*;
+
 @Slf4j
 @WebServlet(name = "DeveloperServlet", urlPatterns = "/api/v1/developers")
 public class DeveloperServlet extends HttpServlet {
@@ -63,8 +65,7 @@ public class DeveloperServlet extends HttpServlet {
                     return;
                 default:
                     log.warn("Invalid parameter type in POST request");
-                    // TODO: move error codes to separate entity
-                    response.sendError(400, "Invalid parameter type");
+                    response.sendError(400, INVALID_PARAMETER_TYPE_TEXT);
             }
         }
 
@@ -77,14 +78,14 @@ public class DeveloperServlet extends HttpServlet {
             if (isValidDeveloper(developer)) {
                 developerService.addData(developer);
             } else {
-                response.sendError(400, "Invalid request body");
+                response.sendError(400, INVALID_REQUEST_BODY_TEXT);
             }
         } catch (SuchEntityAlreadyExistsException e) {
             response.sendError(400, e.getMessage());
         } catch (DbConnectionIssueException e) {
             response.sendError(506, e.getMessage());
         } catch (JsonIOException | JsonSyntaxException e) {
-            response.sendError(400, "Json parsing error");
+            response.sendError(400, JSON_PARSING_ERROR_TEXT);
         }
     }
 
@@ -125,21 +126,21 @@ public class DeveloperServlet extends HttpServlet {
                     Developer.class);
 
             if (!isValidDeveloper(developer)) {
-                response.sendError(400, "Invalid request body");
+                response.sendError(400, INVALID_REQUEST_BODY_TEXT);
                 return;
             }
 
             if (developerService.getDataById(developer.getId()) != null) {
                 developerService.updateDataById(developer);
             } else {
-                response.sendError(400, "Such id doesn't exist");
+                response.sendError(400, NO_SUCH_ID_TEXT);
             }
         } catch (DbConnectionIssueException e) {
             response.sendError(506, e.getMessage());
         } catch (SuchEntityAlreadyExistsException e) {
             response.sendError(400, e.getMessage());
         } catch (JsonIOException | JsonSyntaxException e) {
-            response.sendError(400, "Json parsing error");
+            response.sendError(400, JSON_PARSING_ERROR_TEXT);
         }
     }
 
@@ -152,7 +153,7 @@ public class DeveloperServlet extends HttpServlet {
             if (request.getParameter("id") == null
                     || !request.getParameter("id").matches("\\d+")) {
                 log.warn("Invalid id parameter in DELETE request");
-                response.sendError(400, "Invalid ID parameter");
+                response.sendError(400, INVALID_ID_PARAMETER_TEXT);
             } else {
                 Long deletedId = Long.parseLong(request
                         .getParameter("id"));
@@ -160,7 +161,7 @@ public class DeveloperServlet extends HttpServlet {
                 if (developerService.getDataById(deletedId) != null) {
                     developerService.deleteDataById(deletedId);
                 } else {
-                    response.sendError(400, "Such id doesn't exist");
+                    response.sendError(400, NO_SUCH_ID_TEXT);
                 }
             }
         } catch (DeletingReferencedRecordException e) {
