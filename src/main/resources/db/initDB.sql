@@ -1,6 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS epam_study;
-
-USE epam_study;
+USE xgppdg2ay6zq7l5j;
 
 CREATE TABLE IF NOT EXISTS skills (
     id INT PRIMARY KEY AUTO_INCREMENT,
