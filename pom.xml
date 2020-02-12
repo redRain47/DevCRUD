@@ -210,7 +210,7 @@
                     <assembleDirectory>target</assembleDirectory>
                     <programs>
                         <program>
-                            <mainClass>ua.redrain47.devcrud.WebAppRunner</mainClass>
+                            <mainClass>ua.redrain47.devcrud.Main</mainClass>
                             <id>webapp</id>
                         </program>
                     </programs>
