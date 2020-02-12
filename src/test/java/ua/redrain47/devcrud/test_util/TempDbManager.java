@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.sql.Connection;
 
 public class TempDbManager {
-    private static final String TEST_INIT_DB_SQL_PATH = "src\\main\\resources" +
-            "\\db\\initDB.sql";
-    private static final String TEST_POPULATE_DB_SQL_PATH = "src\\main\\resources" +
-            "\\db\\populateDB.sql";
+    private static final String TEST_INIT_DB_SQL_PATH = "./src/main/resources" +
+            "/db/initDB.sql";
+    private static final String TEST_POPULATE_DB_SQL_PATH = "./src/main/resources" +
+            "//db//populateDB.sql";
     private ScriptRunner scriptRunner;
     public TempDbManager(Connection connection) {
         this.scriptRunner = new ScriptRunner(connection);
