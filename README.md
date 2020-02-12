@@ -67,4 +67,4 @@ This application has been deployed on Heroku cloud platform.
 
 Link to the project: https://dev-crud.herokuapp.com/
 
-Link to the project documentation: 
+Link to the project documentation: -
