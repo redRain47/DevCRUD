@@ -65,6 +65,6 @@ To run this project you should compile the code and start the app with entry poi
 
 This application has been deployed on Heroku cloud platform. 
 
-Link to the project: 
+Link to the project: https://dev-crud.herokuapp.com/
 
 Link to the project documentation: 
