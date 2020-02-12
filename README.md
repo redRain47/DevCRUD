@@ -44,7 +44,7 @@ Layers of this application:
 - SkillServlet
 - AccountServlet
 
-ClearDB MySQL is used as a storage.
+JawsDB MySQL is used as a storage.
 
 To initialize and fill database Liquibase is used.
 
