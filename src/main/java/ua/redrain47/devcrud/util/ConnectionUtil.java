@@ -16,8 +16,8 @@ public class ConnectionUtil {
     static {
         try {
             BufferedReader bufferedReader = new BufferedReader(
-                            new FileReader("src\\main\\resources\\" +
-                            "db\\db_connection.properties"));
+                            new FileReader("./src/main/resources/" +
+                            "db/db_connection.properties"));
             properties.load(bufferedReader);
         } catch (IOException e) {
             e.printStackTrace();
