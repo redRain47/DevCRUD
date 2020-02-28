@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ua.redrain47.devcrud.annotations.Timed;
 import ua.redrain47.devcrud.config.RepositoryConfig;
 import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
@@ -43,6 +44,7 @@ public class AccountService {
         throw e;
     }
 
+    @Timed
     public Account getDataById(Long id) throws DbConnectionIssueException {
         try {
             Account account = accountRepo.getById(id);
@@ -54,6 +56,7 @@ public class AccountService {
         }
     }
 
+    @Timed
     public List<Account> getAllData() throws DbConnectionIssueException {
         try {
             List<Account> accountList = accountRepo.getAll();
@@ -65,6 +68,7 @@ public class AccountService {
         }
     }
 
+    @Timed
     public void addData(Account addedAccount)
             throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         try {
@@ -79,6 +83,7 @@ public class AccountService {
         }
     }
 
+    @Timed
     public void updateDataById(Account updatedAccount)
             throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
         try {
@@ -93,6 +98,7 @@ public class AccountService {
         }
     }
 
+    @Timed
     public void deleteDataById(Long id)
             throws DeletingReferencedRecordException,
             DbConnectionIssueException {
