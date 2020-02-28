@@ -1,4 +1,4 @@
-package ua.redrain47.devcrud.repository;
+package ua.redrain47.devcrud.repository.jdbc;
 
 import org.junit.After;
 import org.junit.Before;
@@ -10,6 +10,8 @@ import ua.redrain47.devcrud.model.Account;
 import ua.redrain47.devcrud.model.AccountStatus;
 import ua.redrain47.devcrud.model.Developer;
 import ua.redrain47.devcrud.model.Skill;
+import ua.redrain47.devcrud.repository.DeveloperRepository;
+import ua.redrain47.devcrud.repository.jdbc.JdbcDeveloperRepositoryImpl;
 import ua.redrain47.devcrud.test_util.H2ConnectionUtil;
 import ua.redrain47.devcrud.test_util.TempDbManager;
 
