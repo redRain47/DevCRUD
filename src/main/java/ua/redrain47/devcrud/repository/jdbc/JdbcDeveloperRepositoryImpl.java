@@ -1,4 +1,4 @@
-package ua.redrain47.devcrud.repository;
+package ua.redrain47.devcrud.repository.jdbc;
 import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
@@ -7,6 +7,8 @@ import ua.redrain47.devcrud.model.Developer;
 import ua.redrain47.devcrud.model.Skill;
 import ua.redrain47.devcrud.queries.DeveloperQueries;
 import ua.redrain47.devcrud.queries.DeveloperSkillsQueries;
+import ua.redrain47.devcrud.repository.AccountRepository;
+import ua.redrain47.devcrud.repository.DeveloperRepository;
 import ua.redrain47.devcrud.util.ConnectionUtil;
 import ua.redrain47.devcrud.util.ObjectMapper;
 

@@ -1,30 +1,45 @@
 package ua.redrain47.devcrud.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import ua.redrain47.devcrud.config.RepositoryConfig;
 import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.repository.DeveloperRepository;
-import ua.redrain47.devcrud.repository.JdbcDeveloperRepositoryImpl;
 import ua.redrain47.devcrud.model.Developer;
 
 import java.util.List;
 
+@Service
+@Import(RepositoryConfig.class)
 @Slf4j
 public class DeveloperService {
     private DeveloperRepository developerRepo;
 
-    public DeveloperService() throws DbConnectionIssueException {
-        try {
-            this.developerRepo = new JdbcDeveloperRepositoryImpl();
-            log.debug("Instance created");
-        } catch (DbConnectionIssueException e) {
-            log.error(e.getMessage());
-            throw e;
-        }
+//    public DeveloperService() throws DbConnectionIssueException {
+//        try {
+//            this.developerRepo = new JdbcDeveloperRepositoryImpl();
+//            log.debug("Instance created");
+//        } catch (DbConnectionIssueException e) {
+//            log.error(e.getMessage());
+//            throw e;
+//        }
+//    }
+
+    @ExceptionHandler(DbConnectionIssueException.class)
+    public void handleException(DbConnectionIssueException e)
+            throws DbConnectionIssueException {
+        log.error(e.getMessage());
+        throw e;
     }
 
-    public DeveloperService(DeveloperRepository developerRepo) {
+    @Autowired
+    public DeveloperService(@Qualifier("developerRepository") DeveloperRepository developerRepo) {
         this.developerRepo = developerRepo;
     }
 

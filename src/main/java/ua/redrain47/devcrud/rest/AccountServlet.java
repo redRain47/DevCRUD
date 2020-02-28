@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
@@ -26,8 +29,12 @@ public class AccountServlet extends HttpServlet {
 
     public AccountServlet() {
         try {
-            this.accountService = new AccountService();
-        } catch (DbConnectionIssueException e) {
+            AnnotationConfigApplicationContext appCtx = new AnnotationConfigApplicationContext();
+
+            appCtx.scan("ua.redrain47.devcrud.service");
+            appCtx.refresh();
+            this.accountService = appCtx.getBean(AccountService.class);
+        } catch (BeansException e) {
             log.error("AccountServlet -> " + e);
             e.printStackTrace();
         }

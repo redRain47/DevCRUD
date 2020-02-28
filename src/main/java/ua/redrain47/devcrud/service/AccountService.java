@@ -1,31 +1,46 @@
 package ua.redrain47.devcrud.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import ua.redrain47.devcrud.config.RepositoryConfig;
 import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.repository.AccountRepository;
-import ua.redrain47.devcrud.repository.JdbcAccountRepositoryImpl;
 import ua.redrain47.devcrud.model.Account;
 
 import java.util.List;
 
+@Service
+@Import(RepositoryConfig.class)
 @Slf4j
 public class AccountService {
     private AccountRepository accountRepo;
 
-    public AccountService() throws DbConnectionIssueException {
-        try {
-            accountRepo = new JdbcAccountRepositoryImpl();
-            log.debug("Instance created");
-        } catch (DbConnectionIssueException e) {
-            log.error(e.getMessage());
-            throw e;
-        }
+//    public AccountService() throws DbConnectionIssueException {
+//        try {
+//            accountRepo = new JdbcAccountRepositoryImpl();
+//            log.debug("Instance created");
+//        } catch (DbConnectionIssueException e) {
+//            log.error(e.getMessage());
+//            throw e;
+//        }
+//    }
+
+    @Autowired
+    public AccountService(@Qualifier("accountRepository") AccountRepository accountRepo) {
+        this.accountRepo = accountRepo;
     }
 
-    public AccountService(AccountRepository accountRepo) {
-        this.accountRepo = accountRepo;
+    @ExceptionHandler(DbConnectionIssueException.class)
+    public void handleException(DbConnectionIssueException e)
+            throws DbConnectionIssueException {
+        log.error(e.getMessage());
+        throw e;
     }
 
     public Account getDataById(Long id) throws DbConnectionIssueException {
