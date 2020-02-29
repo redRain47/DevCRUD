@@ -2,15 +2,24 @@ package ua.redrain47.devcrud.service;
 
 import lombok.SneakyThrows;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import ua.redrain47.devcrud.model.Account;
 import ua.redrain47.devcrud.repository.AccountRepository;
 
 import static org.mockito.Mockito.*;
 
 public class AccountServiceTest {
-    private static AccountRepository accountRepo = mock(AccountRepository.class);
-    private AccountService accountService = new AccountService(accountRepo);
+    @Mock
+    private AccountRepository accountRepo;
+    @InjectMocks
+    private AccountService accountService;
     private Account testAccount = new Account(null, null, null);
+
+    public AccountServiceTest() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @SneakyThrows
     @Test
