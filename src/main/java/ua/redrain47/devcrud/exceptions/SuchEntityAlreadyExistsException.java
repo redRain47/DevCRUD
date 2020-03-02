@@ -1,6 +1,6 @@
 package ua.redrain47.devcrud.exceptions;
 
-public class SuchEntityAlreadyExistsException extends Exception {
+public class SuchEntityAlreadyExistsException extends RuntimeException {
     public SuchEntityAlreadyExistsException(Throwable cause) {
         super(cause);
     }

@@ -1,6 +1,6 @@
 package ua.redrain47.devcrud.repository.jdbc;
 
-import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
+import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.model.Skill;
@@ -15,11 +15,11 @@ import java.util.List;
 public class JdbcSkillRepositoryImpl implements SkillRepository {
     private Connection connection;
 
-    public JdbcSkillRepositoryImpl() throws DbConnectionIssueException {
+    public JdbcSkillRepositoryImpl() throws DbStorageException {
         try {
             connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
@@ -29,7 +29,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public void save(Skill newSkill)
-            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbStorageException {
         try ( PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.INSERT_QUERY)) {
             preparedStatement.setString(1, newSkill.getName());
@@ -38,12 +38,12 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new SuchEntityAlreadyExistsException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
-    public Skill getById(Long searchId) throws DbConnectionIssueException {
+    public Skill getById(Long searchId) throws DbStorageException {
         if (searchId == null) {
             return null;
         }
@@ -62,12 +62,12 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
             return foundSkill;
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
-    public List<Skill> getAll() throws DbConnectionIssueException {
+    public List<Skill> getAll() throws DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.SELECT_ALL_QUERY)) {
 
@@ -76,13 +76,13 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
             return (skillList.size() != 0) ? skillList : null;
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
     public void update(Skill updatedSkill)
-            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.UPDATE_BY_ID_QUERY)) {
             preparedStatement.setString(1, updatedSkill.getName());
@@ -92,14 +92,14 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new SuchEntityAlreadyExistsException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
     public void deleteById(Long deletedId)
             throws DeletingReferencedRecordException,
-            DbConnectionIssueException {
+            DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.DELETE_BY_ID_QUERY)) {
             preparedStatement.setInt(1, deletedId.intValue());
@@ -108,7 +108,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DeletingReferencedRecordException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 }

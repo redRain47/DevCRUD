@@ -1,5 +1,5 @@
 package ua.redrain47.devcrud.repository.jdbc;
-import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
+import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.model.Account;
@@ -19,11 +19,11 @@ import java.util.Set;
 public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     private Connection connection;
 
-    public JdbcDeveloperRepositoryImpl() throws DbConnectionIssueException {
+    public JdbcDeveloperRepositoryImpl() throws DbStorageException {
         try {
             connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
@@ -33,7 +33,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public void save(Developer newDeveloper)
-            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperQueries.INSERT_QUERY)) {
 
@@ -54,12 +54,12 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new SuchEntityAlreadyExistsException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
-    public Developer getById(Long searchId) throws DbConnectionIssueException {
+    public Developer getById(Long searchId) throws DbStorageException {
         if (searchId == null) {
             return null;
         }
@@ -81,12 +81,12 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
             return foundDeveloper;
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
-    public List<Developer> getAll() throws DbConnectionIssueException {
+    public List<Developer> getAll() throws DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperQueries.SELECT_ALL_QUERY)) {
 
@@ -100,13 +100,13 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
             return (developerList.size() != 0) ? developerList : null;
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
     public void update(Developer updatedDeveloper)
-            throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+            throws DbStorageException, SuchEntityAlreadyExistsException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperQueries.UPDATE_BY_ID_QUERY)) {
 
@@ -130,14 +130,14 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new SuchEntityAlreadyExistsException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
     public void deleteById(Long deletedId)
             throws DeletingReferencedRecordException,
-            DbConnectionIssueException {
+            DbStorageException {
         try (PreparedStatement  preparedStatement = connection
                 .prepareStatement(DeveloperQueries.DELETE_BY_ID_QUERY)) {
             deleteAllDeveloperSkills(deletedId);
@@ -147,7 +147,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DeletingReferencedRecordException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
@@ -214,7 +214,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     private void setDeveloperAccount(Developer developer)
-            throws DbConnectionIssueException {
+            throws DbStorageException {
         Account developerAccount = developer.getAccount();
 
         if (developerAccount != null) {

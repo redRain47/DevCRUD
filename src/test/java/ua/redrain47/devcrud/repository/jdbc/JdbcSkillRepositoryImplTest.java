@@ -3,14 +3,12 @@ package ua.redrain47.devcrud.repository.jdbc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
+import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.model.Skill;
 import ua.redrain47.devcrud.repository.DeveloperRepository;
 import ua.redrain47.devcrud.repository.SkillRepository;
-import ua.redrain47.devcrud.repository.jdbc.JdbcDeveloperRepositoryImpl;
-import ua.redrain47.devcrud.repository.jdbc.JdbcSkillRepositoryImpl;
 import ua.redrain47.devcrud.test_util.H2ConnectionUtil;
 import ua.redrain47.devcrud.test_util.TempDbManager;
 
@@ -42,7 +40,7 @@ public class JdbcSkillRepositoryImplTest {
     }
 
     @Test
-    public void shouldSaveCorrectly() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldSaveCorrectly() throws DbStorageException, SuchEntityAlreadyExistsException {
         Skill expectedNewSkill = new Skill(4L, "C");
         skillRepo.save(expectedNewSkill);
 
@@ -52,24 +50,24 @@ public class JdbcSkillRepositoryImplTest {
     }
 
     @Test(expected = SuchEntityAlreadyExistsException.class)
-    public void shouldNotSaveDuplicate() throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
+    public void shouldNotSaveDuplicate() throws SuchEntityAlreadyExistsException, DbStorageException {
         Skill duplicatedSkill = new Skill(1L, "Java");
         skillRepo.save(duplicatedSkill);
     }
 
     @Test
-    public void shouldGetDataById() throws DbConnectionIssueException {
+    public void shouldGetDataById() throws DbStorageException {
         Skill expectedSkill = new Skill(1L, "Java");
         assertEquals(expectedSkill, skillRepo.getById(1L));
     }
 
     @Test
-    public void shouldNotGetDataByNonExistedId() throws DbConnectionIssueException {
+    public void shouldNotGetDataByNonExistedId() throws DbStorageException {
         assertNull(skillRepo.getById(5L));
     }
 
     @Test
-    public void shouldGetAll() throws DbConnectionIssueException {
+    public void shouldGetAll() throws DbStorageException {
         List<Skill> expectedSkillList = new ArrayList<>();
 
         expectedSkillList.add(new Skill(1L, "Java"));
@@ -80,7 +78,7 @@ public class JdbcSkillRepositoryImplTest {
     }
 
     @Test
-    public void shouldUpdate() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldUpdate() throws DbStorageException, SuchEntityAlreadyExistsException {
         Skill updatedSkill = skillRepo.getById(1L);
 
         updatedSkill.setName("Rust");
@@ -90,14 +88,14 @@ public class JdbcSkillRepositoryImplTest {
     }
 
     @Test(expected = SuchEntityAlreadyExistsException.class)
-    public void shouldNotUpdateDueToDuplicate() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldNotUpdateDueToDuplicate() throws DbStorageException, SuchEntityAlreadyExistsException {
         Skill skill = skillRepo.getById(1L);
         skill.setId(2L);
         skillRepo.update(skill);
     }
 
     @Test
-    public void shouldDeleteCorrectly() throws DbConnectionIssueException, DeletingReferencedRecordException {
+    public void shouldDeleteCorrectly() throws DbStorageException, DeletingReferencedRecordException {
         List<Skill> allSkillsButOne = skillRepo.getAll();
 
         allSkillsButOne.remove(0);
@@ -112,7 +110,7 @@ public class JdbcSkillRepositoryImplTest {
     }
 
     @Test(expected = DeletingReferencedRecordException.class)
-    public void shouldNotDeleteReferencedRow() throws DbConnectionIssueException, DeletingReferencedRecordException {
+    public void shouldNotDeleteReferencedRow() throws DbStorageException, DeletingReferencedRecordException {
         skillRepo.deleteById(1L);
     }
 }

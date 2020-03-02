@@ -1,6 +1,6 @@
 package ua.redrain47.devcrud.exceptions;
 
-public class DeletingReferencedRecordException extends Exception {
+public class DeletingReferencedRecordException extends RuntimeException {
     public DeletingReferencedRecordException(Throwable cause) {
         super(cause);
     }

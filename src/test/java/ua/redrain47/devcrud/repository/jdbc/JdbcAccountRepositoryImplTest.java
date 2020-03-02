@@ -3,15 +3,13 @@ package ua.redrain47.devcrud.repository.jdbc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
+import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.model.Account;
 import ua.redrain47.devcrud.model.AccountStatus;
 import ua.redrain47.devcrud.repository.AccountRepository;
 import ua.redrain47.devcrud.repository.DeveloperRepository;
-import ua.redrain47.devcrud.repository.jdbc.JdbcAccountRepositoryImpl;
-import ua.redrain47.devcrud.repository.jdbc.JdbcDeveloperRepositoryImpl;
 import ua.redrain47.devcrud.test_util.H2ConnectionUtil;
 import ua.redrain47.devcrud.test_util.TempDbManager;
 
@@ -43,7 +41,7 @@ public class JdbcAccountRepositoryImplTest {
     }
 
     @Test
-    public void shouldSaveCorrectly() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldSaveCorrectly() throws DbStorageException, SuchEntityAlreadyExistsException {
         Account expectedNewAccount = new Account(4L, "qwert123@mail.com",
                 AccountStatus.ACTIVE);
         accountRepo.save(expectedNewAccount);
@@ -54,26 +52,26 @@ public class JdbcAccountRepositoryImplTest {
     }
 
     @Test(expected = SuchEntityAlreadyExistsException.class)
-    public void shouldNotSaveDuplicate() throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
+    public void shouldNotSaveDuplicate() throws SuchEntityAlreadyExistsException, DbStorageException {
         Account duplicatedAccount = new Account(1L, "asd@sda.com",
                 AccountStatus.ACTIVE);
         accountRepo.save(duplicatedAccount);
     }
 
     @Test
-    public void shouldGetDataById() throws DbConnectionIssueException {
+    public void shouldGetDataById() throws DbStorageException {
         Account expectedAccount = new Account(1L, "asd@sda.com",
                 AccountStatus.ACTIVE);
         assertEquals(expectedAccount, accountRepo.getById(1L));
     }
 
     @Test
-    public void shouldNotGetDataByNonExistedId() throws DbConnectionIssueException {
+    public void shouldNotGetDataByNonExistedId() throws DbStorageException {
         assertNull(accountRepo.getById(5L));
     }
 
     @Test
-    public void shouldGetAll() throws DbConnectionIssueException {
+    public void shouldGetAll() throws DbStorageException {
         List<Account> expectedAccountList = new ArrayList<>();
 
         expectedAccountList.add(new Account(1L, "asd@sda.com",
@@ -87,7 +85,7 @@ public class JdbcAccountRepositoryImplTest {
     }
 
     @Test
-    public void shouldUpdate() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldUpdate() throws DbStorageException, SuchEntityAlreadyExistsException {
         Account updatedAccount = accountRepo.getById(1L);
 
         updatedAccount.setEmail("qwerty@oroal.com");
@@ -97,14 +95,14 @@ public class JdbcAccountRepositoryImplTest {
     }
 
     @Test(expected = SuchEntityAlreadyExistsException.class)
-    public void shouldNotUpdateDueToDuplicate() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldNotUpdateDueToDuplicate() throws DbStorageException, SuchEntityAlreadyExistsException {
         Account account = accountRepo.getById(1L);
         account.setId(2L);
         accountRepo.update(account);
     }
 
     @Test
-    public void shouldDeleteCorrectly() throws DbConnectionIssueException, DeletingReferencedRecordException {
+    public void shouldDeleteCorrectly() throws DbStorageException, DeletingReferencedRecordException {
         List<Account> allAccountsButOne = accountRepo.getAll();
 
         allAccountsButOne.remove(0); // id: 1
@@ -115,7 +113,7 @@ public class JdbcAccountRepositoryImplTest {
     }
 
     @Test(expected = DeletingReferencedRecordException.class)
-    public void shouldNotDeleteReferencedRow() throws DbConnectionIssueException, DeletingReferencedRecordException {
+    public void shouldNotDeleteReferencedRow() throws DbStorageException, DeletingReferencedRecordException {
         accountRepo.deleteById(1L);
     }
 }

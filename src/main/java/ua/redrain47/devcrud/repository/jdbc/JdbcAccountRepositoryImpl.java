@@ -1,7 +1,7 @@
 package ua.redrain47.devcrud.repository.jdbc;
 
+import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
-import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.model.Account;
 import ua.redrain47.devcrud.queries.AccountQueries;
@@ -15,11 +15,11 @@ import java.util.List;
 public class JdbcAccountRepositoryImpl implements AccountRepository {
     private Connection connection;
 
-    public JdbcAccountRepositoryImpl() throws DbConnectionIssueException {
+    public JdbcAccountRepositoryImpl() throws DbStorageException {
         try {
             this.connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
@@ -29,7 +29,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
 
     @Override
     public void save(Account newAccount)
-            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.INSERT_QUERY)) {
 
@@ -41,12 +41,12 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new SuchEntityAlreadyExistsException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
-    public Account getById(Long searchId) throws DbConnectionIssueException {
+    public Account getById(Long searchId) throws DbStorageException {
         if (searchId == null) {
             return null;
         }
@@ -66,12 +66,12 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
 
             return foundAccount;
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
-    public List<Account> getAll() throws DbConnectionIssueException {
+    public List<Account> getAll() throws DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.SELECT_ALL_QUERY)) {
 
@@ -80,13 +80,13 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
 
             return (accountList.size() != 0) ? accountList : null;
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
     public void update(Account updatedAccount)
-            throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
+            throws SuchEntityAlreadyExistsException, DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.UPDATE_BY_ID_QUERY)) {
             preparedStatement.setString(1, updatedAccount.getEmail());
@@ -98,13 +98,13 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new SuchEntityAlreadyExistsException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 
     @Override
     public void deleteById(Long deletedId) throws
-            DeletingReferencedRecordException, DbConnectionIssueException {
+            DeletingReferencedRecordException, DbStorageException {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.DELETE_BY_ID_QUERY)) {
             preparedStatement.setInt(1, deletedId.intValue());
@@ -112,7 +112,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DeletingReferencedRecordException(e);
         } catch (SQLException e) {
-            throw new DbConnectionIssueException(e);
+            throw new DbStorageException(e);
         }
     }
 }

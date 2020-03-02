@@ -3,7 +3,7 @@ package ua.redrain47.devcrud.repository.jdbc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ua.redrain47.devcrud.exceptions.DbConnectionIssueException;
+import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.model.Account;
@@ -11,7 +11,6 @@ import ua.redrain47.devcrud.model.AccountStatus;
 import ua.redrain47.devcrud.model.Developer;
 import ua.redrain47.devcrud.model.Skill;
 import ua.redrain47.devcrud.repository.DeveloperRepository;
-import ua.redrain47.devcrud.repository.jdbc.JdbcDeveloperRepositoryImpl;
 import ua.redrain47.devcrud.test_util.H2ConnectionUtil;
 import ua.redrain47.devcrud.test_util.TempDbManager;
 
@@ -40,7 +39,7 @@ public class JdbcDeveloperRepositoryImplTest {
     }
 
     @Test
-    public void shouldSaveCorrectly() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldSaveCorrectly() throws DbStorageException, SuchEntityAlreadyExistsException {
         Account account = new Account(1L, "asd@sda.com", AccountStatus.ACTIVE);
         Skill javaSkill = new Skill(1L, "Java");
         Developer expectedNewDeveloper = new Developer(4L, "John",
@@ -53,13 +52,13 @@ public class JdbcDeveloperRepositoryImplTest {
     }
 
     @Test(expected = SuchEntityAlreadyExistsException.class)
-    public void shouldNotSaveDuplicate() throws SuchEntityAlreadyExistsException, DbConnectionIssueException {
+    public void shouldNotSaveDuplicate() throws SuchEntityAlreadyExistsException, DbStorageException {
         Developer duplicatedSkill = developerRepo.getById(1L);
         developerRepo.save(duplicatedSkill);
     }
 
     @Test
-    public void shouldGetDataById() throws DbConnectionIssueException {
+    public void shouldGetDataById() throws DbStorageException {
         Account account = new Account(1L, "asd@sda.com", AccountStatus.ACTIVE);
 
         Set<Skill> skillSet = new HashSet<>();
@@ -73,12 +72,12 @@ public class JdbcDeveloperRepositoryImplTest {
     }
 
     @Test
-    public void shouldNotGetDataByNonExistedId() throws DbConnectionIssueException {
+    public void shouldNotGetDataByNonExistedId() throws DbStorageException {
         assertNull(developerRepo.getById(5L));
     }
 
     @Test
-    public void shouldGetAll() throws DbConnectionIssueException {
+    public void shouldGetAll() throws DbStorageException {
         List<Developer> expectedDeveloperList = new ArrayList<>();
         Skill javaSkill = new Skill(1L, "Java");
         Skill cppSkill = new Skill(2L, "C++");
@@ -106,7 +105,7 @@ public class JdbcDeveloperRepositoryImplTest {
     }
 
     @Test
-    public void shouldUpdate() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldUpdate() throws DbStorageException, SuchEntityAlreadyExistsException {
         Developer updatedDeveloper = developerRepo.getById(1L);
 
         updatedDeveloper.setLastName("Sins");
@@ -116,14 +115,14 @@ public class JdbcDeveloperRepositoryImplTest {
     }
 
     @Test(expected = SuchEntityAlreadyExistsException.class)
-    public void shouldNotUpdateDueToDuplicate() throws DbConnectionIssueException, SuchEntityAlreadyExistsException {
+    public void shouldNotUpdateDueToDuplicate() throws DbStorageException, SuchEntityAlreadyExistsException {
         Developer developer = developerRepo.getById(1L);
         developer.setId(2L);
         developerRepo.update(developer);
     }
 
     @Test
-    public void shouldDeleteCorrectly() throws DbConnectionIssueException, DeletingReferencedRecordException {
+    public void shouldDeleteCorrectly() throws DbStorageException, DeletingReferencedRecordException {
         List<Developer> allDevelopersButOne = developerRepo.getAll();
 
         allDevelopersButOne.remove(0);
