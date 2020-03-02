@@ -15,7 +15,7 @@ import java.util.List;
 public class JdbcSkillRepositoryImpl implements SkillRepository {
     private Connection connection;
 
-    public JdbcSkillRepositoryImpl() throws DbStorageException {
+    public JdbcSkillRepositoryImpl() {
         try {
             connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
@@ -28,8 +28,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     }
 
     @Override
-    public void save(Skill newSkill)
-            throws SuchEntityAlreadyExistsException, DbStorageException {
+    public void save(Skill newSkill) {
         try ( PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.INSERT_QUERY)) {
             preparedStatement.setString(1, newSkill.getName());
@@ -43,7 +42,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     }
 
     @Override
-    public Skill getById(Long searchId) throws DbStorageException {
+    public Skill getById(Long searchId) {
         if (searchId == null) {
             return null;
         }
@@ -67,7 +66,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     }
 
     @Override
-    public List<Skill> getAll() throws DbStorageException {
+    public List<Skill> getAll() {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.SELECT_ALL_QUERY)) {
 
@@ -81,8 +80,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     }
 
     @Override
-    public void update(Skill updatedSkill)
-            throws SuchEntityAlreadyExistsException, DbStorageException {
+    public void update(Skill updatedSkill) {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.UPDATE_BY_ID_QUERY)) {
             preparedStatement.setString(1, updatedSkill.getName());
@@ -97,9 +95,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
     }
 
     @Override
-    public void deleteById(Long deletedId)
-            throws DeletingReferencedRecordException,
-            DbStorageException {
+    public void deleteById(Long deletedId) {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.DELETE_BY_ID_QUERY)) {
             preparedStatement.setInt(1, deletedId.intValue());

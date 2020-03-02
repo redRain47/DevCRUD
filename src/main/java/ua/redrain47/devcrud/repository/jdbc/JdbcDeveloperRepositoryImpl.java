@@ -19,7 +19,7 @@ import java.util.Set;
 public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     private Connection connection;
 
-    public JdbcDeveloperRepositoryImpl() throws DbStorageException {
+    public JdbcDeveloperRepositoryImpl() {
         try {
             connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
@@ -32,8 +32,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public void save(Developer newDeveloper)
-            throws SuchEntityAlreadyExistsException, DbStorageException {
+    public void save(Developer newDeveloper) {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperQueries.INSERT_QUERY)) {
 
@@ -59,7 +58,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public Developer getById(Long searchId) throws DbStorageException {
+    public Developer getById(Long searchId) {
         if (searchId == null) {
             return null;
         }
@@ -86,7 +85,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public List<Developer> getAll() throws DbStorageException {
+    public List<Developer> getAll() {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperQueries.SELECT_ALL_QUERY)) {
 
@@ -105,8 +104,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public void update(Developer updatedDeveloper)
-            throws DbStorageException, SuchEntityAlreadyExistsException {
+    public void update(Developer updatedDeveloper) {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperQueries.UPDATE_BY_ID_QUERY)) {
 
@@ -135,9 +133,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public void deleteById(Long deletedId)
-            throws DeletingReferencedRecordException,
-            DbStorageException {
+    public void deleteById(Long deletedId) {
         try (PreparedStatement  preparedStatement = connection
                 .prepareStatement(DeveloperQueries.DELETE_BY_ID_QUERY)) {
             deleteAllDeveloperSkills(deletedId);
@@ -213,8 +209,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         }
     }
 
-    private void setDeveloperAccount(Developer developer)
-            throws DbStorageException {
+    private void setDeveloperAccount(Developer developer) {
         Account developerAccount = developer.getAccount();
 
         if (developerAccount != null) {

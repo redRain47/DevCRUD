@@ -15,7 +15,7 @@ import java.util.List;
 public class JdbcAccountRepositoryImpl implements AccountRepository {
     private Connection connection;
 
-    public JdbcAccountRepositoryImpl() throws DbStorageException {
+    public JdbcAccountRepositoryImpl() {
         try {
             this.connection = ConnectionUtil.getConnection();
         } catch (SQLException e) {
@@ -28,8 +28,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public void save(Account newAccount)
-            throws SuchEntityAlreadyExistsException, DbStorageException {
+    public void save(Account newAccount) {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.INSERT_QUERY)) {
 
@@ -46,7 +45,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account getById(Long searchId) throws DbStorageException {
+    public Account getById(Long searchId) {
         if (searchId == null) {
             return null;
         }
@@ -71,7 +70,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public List<Account> getAll() throws DbStorageException {
+    public List<Account> getAll() {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.SELECT_ALL_QUERY)) {
 
@@ -85,8 +84,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public void update(Account updatedAccount)
-            throws SuchEntityAlreadyExistsException, DbStorageException {
+    public void update(Account updatedAccount) {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.UPDATE_BY_ID_QUERY)) {
             preparedStatement.setString(1, updatedAccount.getEmail());
@@ -103,8 +101,7 @@ public class JdbcAccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public void deleteById(Long deletedId) throws
-            DeletingReferencedRecordException, DbStorageException {
+    public void deleteById(Long deletedId) {
         try (PreparedStatement preparedStatement = connection
                 .prepareStatement(AccountQueries.DELETE_BY_ID_QUERY)) {
             preparedStatement.setInt(1, deletedId.intValue());
