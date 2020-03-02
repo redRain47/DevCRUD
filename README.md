@@ -1,4 +1,4 @@
-# DevCRUD [![Build Status](https://travis-ci.com/redRain47/DevCRUD.svg?branch=master)](https://travis-ci.com/redRain47/DevCRUD)
+# DevCRUD [![Build Status](https://travis-ci.com/redRain47/devcrud-epam-pet-project.svg?branch=master)](https://travis-ci.com/redRain47/DevCRUD)
 
 This is a RESTful application which allows performing main CRUD operations via HTTP requests. 
 
