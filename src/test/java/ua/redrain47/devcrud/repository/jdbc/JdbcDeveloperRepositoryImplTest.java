@@ -17,7 +17,8 @@ import ua.redrain47.devcrud.test_util.TempDbManager;
 import java.sql.Connection;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class JdbcDeveloperRepositoryImplTest {
     private DeveloperRepository developerRepo;

@@ -8,7 +8,8 @@ import org.mockito.MockitoAnnotations;
 import ua.redrain47.devcrud.model.Skill;
 import ua.redrain47.devcrud.repository.SkillRepository;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class SkillServiceTest {
     @Mock

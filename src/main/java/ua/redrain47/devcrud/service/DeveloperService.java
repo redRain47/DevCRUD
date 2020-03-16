@@ -3,22 +3,15 @@ package ua.redrain47.devcrud.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import ua.redrain47.devcrud.config.RepositoryConfig;
-import ua.redrain47.devcrud.exceptions.DbStorageException;
-import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
-import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
-import ua.redrain47.devcrud.repository.DeveloperRepository;
 import ua.redrain47.devcrud.model.Developer;
+import ua.redrain47.devcrud.repository.DeveloperRepository;
 
 import java.util.List;
 
 @Service
-@Import(RepositoryConfig.class)
 @Slf4j
-public class DeveloperService {
+public class DeveloperService implements Serviceable<Developer, Long> {
     private DeveloperRepository developerRepo;
 
     @Autowired

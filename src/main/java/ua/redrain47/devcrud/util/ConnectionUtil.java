@@ -16,7 +16,7 @@ public class ConnectionUtil {
     static {
         try {
             BufferedReader bufferedReader = new BufferedReader(
-                            new FileReader("./src/main/resources/" +
+                    new FileReader("./src/main/resources/" +
                             "db/db_connection.properties"));
             properties.load(bufferedReader);
         } catch (IOException e) {
@@ -28,9 +28,10 @@ public class ConnectionUtil {
         basicDataSource.setPassword(properties.getProperty("password"));
     }
 
+    private ConnectionUtil() {
+    }
+
     public static Connection getConnection() throws SQLException {
         return basicDataSource.getConnection();
     }
-
-    private ConnectionUtil() {}
 }

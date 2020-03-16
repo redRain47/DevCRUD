@@ -8,7 +8,8 @@ import org.mockito.MockitoAnnotations;
 import ua.redrain47.devcrud.model.Developer;
 import ua.redrain47.devcrud.repository.DeveloperRepository;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class DeveloperServiceTest {
     @Mock

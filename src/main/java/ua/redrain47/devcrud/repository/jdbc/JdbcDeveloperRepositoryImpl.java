@@ -1,4 +1,6 @@
 package ua.redrain47.devcrud.repository.jdbc;
+
+import org.springframework.stereotype.Component;
 import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
@@ -16,6 +18,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.Set;
 
+@Component("developerRepository")
 public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
     private Connection connection;
 
@@ -64,7 +67,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
         }
 
         try (PreparedStatement preparedStatement = connection
-                .prepareStatement(DeveloperQueries.SELECT_BY_ID_QUERY)){
+                .prepareStatement(DeveloperQueries.SELECT_BY_ID_QUERY)) {
 
             preparedStatement.setInt(1, searchId.intValue());
 
@@ -134,7 +137,7 @@ public class JdbcDeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public void deleteById(Long deletedId) {
-        try (PreparedStatement  preparedStatement = connection
+        try (PreparedStatement preparedStatement = connection
                 .prepareStatement(DeveloperQueries.DELETE_BY_ID_QUERY)) {
             deleteAllDeveloperSkills(deletedId);
 

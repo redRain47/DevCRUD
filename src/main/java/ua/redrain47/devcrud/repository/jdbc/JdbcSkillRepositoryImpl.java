@@ -1,5 +1,6 @@
 package ua.redrain47.devcrud.repository.jdbc;
 
+import org.springframework.stereotype.Component;
 import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
 import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
@@ -12,6 +13,7 @@ import ua.redrain47.devcrud.util.ObjectMapper;
 import java.sql.*;
 import java.util.List;
 
+@Component("skillRepository")
 public class JdbcSkillRepositoryImpl implements SkillRepository {
     private Connection connection;
 
@@ -29,7 +31,7 @@ public class JdbcSkillRepositoryImpl implements SkillRepository {
 
     @Override
     public void save(Skill newSkill) {
-        try ( PreparedStatement preparedStatement = connection
+        try (PreparedStatement preparedStatement = connection
                 .prepareStatement(SkillQueries.INSERT_QUERY)) {
             preparedStatement.setString(1, newSkill.getName());
 

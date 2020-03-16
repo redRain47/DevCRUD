@@ -3,19 +3,16 @@ package ua.redrain47.devcrud.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import ua.redrain47.devcrud.annotations.Timed;
-import ua.redrain47.devcrud.config.RepositoryConfig;
-import ua.redrain47.devcrud.repository.AccountRepository;
 import ua.redrain47.devcrud.model.Account;
+import ua.redrain47.devcrud.repository.AccountRepository;
 
 import java.util.List;
 
 @Service
-@Import(RepositoryConfig.class)
 @Slf4j
-public class AccountService {
+public class AccountService implements Serviceable<Account, Long> {
     private AccountRepository accountRepo;
 
     @Autowired

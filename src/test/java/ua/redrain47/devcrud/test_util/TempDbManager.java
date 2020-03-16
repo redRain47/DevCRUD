@@ -12,6 +12,7 @@ public class TempDbManager {
     private static final String TEST_POPULATE_DB_SQL_PATH = "./src/main/resources" +
             "//db//populateDB.sql";
     private ScriptRunner scriptRunner;
+
     public TempDbManager(Connection connection) {
         this.scriptRunner = new ScriptRunner(connection);
     }

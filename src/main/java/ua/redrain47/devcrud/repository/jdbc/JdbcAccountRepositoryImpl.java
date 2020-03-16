@@ -1,8 +1,9 @@
 package ua.redrain47.devcrud.repository.jdbc;
 
+import org.springframework.stereotype.Component;
 import ua.redrain47.devcrud.exceptions.DbStorageException;
-import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
+import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
 import ua.redrain47.devcrud.model.Account;
 import ua.redrain47.devcrud.queries.AccountQueries;
 import ua.redrain47.devcrud.repository.AccountRepository;
@@ -12,6 +13,7 @@ import ua.redrain47.devcrud.util.ObjectMapper;
 import java.sql.*;
 import java.util.List;
 
+@Component("accountRepository")
 public class JdbcAccountRepositoryImpl implements AccountRepository {
     private Connection connection;
 

@@ -3,22 +3,15 @@ package ua.redrain47.devcrud.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import ua.redrain47.devcrud.config.RepositoryConfig;
-import ua.redrain47.devcrud.exceptions.DbStorageException;
-import ua.redrain47.devcrud.exceptions.DeletingReferencedRecordException;
-import ua.redrain47.devcrud.exceptions.SuchEntityAlreadyExistsException;
-import ua.redrain47.devcrud.repository.SkillRepository;
 import ua.redrain47.devcrud.model.Skill;
+import ua.redrain47.devcrud.repository.SkillRepository;
 
 import java.util.List;
 
 @Service
-@Import(RepositoryConfig.class)
 @Slf4j
-public class SkillService {
+public class SkillService implements Serviceable<Skill, Long> {
     private SkillRepository skillRepo;
 
     @Autowired
