@@ -2,20 +2,15 @@ package ua.redrain47.devcrud.service;
 
 import lombok.SneakyThrows;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ua.redrain47.devcrud.model.Developer;
 import ua.redrain47.devcrud.repository.DeveloperRepository;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class DeveloperServiceTest {
-    @Mock
-    private DeveloperRepository developerRepo;
-    @InjectMocks
-    private DeveloperService developerService;
+    private DeveloperRepository developerRepo = mock(DeveloperRepository.class);
+    private DeveloperService developerService = new DeveloperService(developerRepo);
     private Developer testDeveloper = new Developer(null, null,
             null, null, null);
 

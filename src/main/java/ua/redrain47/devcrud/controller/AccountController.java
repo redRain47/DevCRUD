@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.redrain47.devcrud.model.Account;
 import ua.redrain47.devcrud.service.AccountService;
@@ -22,6 +23,7 @@ public class AccountController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Void> save(@RequestBody Account account) {
         log.debug("Request to create (POST)");
 
@@ -34,6 +36,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Account> getById(@PathVariable Long id) {
         Account account = accountService.getDataById(id);
 
@@ -43,6 +46,7 @@ public class AccountController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Account>> getAll() {
         List<Account> accounts = accountService.getAllData();
 
@@ -52,6 +56,7 @@ public class AccountController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> update(@RequestBody Account account) {
         if (isValidAccount(account)) {
             if (accountService.getDataById(account.getId()) == null) {
@@ -67,6 +72,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (accountService.getDataById(id) == null) {
             return ResponseEntity.notFound().build();

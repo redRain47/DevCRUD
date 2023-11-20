@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.redrain47.devcrud.exceptions.DbStorageException;
 import ua.redrain47.devcrud.model.Account;
@@ -33,6 +34,7 @@ public class DeveloperController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Void> save(@RequestBody Developer developer) {
         log.debug("Request to create (POST)");
 
@@ -45,6 +47,7 @@ public class DeveloperController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Developer> getById(@PathVariable Long id) {
         Developer developer = developerService.getDataById(id);
 
@@ -54,6 +57,7 @@ public class DeveloperController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Developer>> getAll() {
         List<Developer> developers = developerService.getAllData();
 
@@ -63,6 +67,7 @@ public class DeveloperController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> update(@RequestBody Developer developer) {
         if (isValidDeveloper(developer)) {
             if (developerService.getDataById(developer.getId()) == null) {
@@ -78,6 +83,7 @@ public class DeveloperController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (developerService.getDataById(id) == null) {
             return ResponseEntity.notFound().build();

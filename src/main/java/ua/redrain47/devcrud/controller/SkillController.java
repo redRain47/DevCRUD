@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.redrain47.devcrud.model.Skill;
 import ua.redrain47.devcrud.service.SkillService;
@@ -22,6 +23,7 @@ public class SkillController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Void> save(@RequestBody Skill skill) {
         log.debug("Request to create (POST)");
 
@@ -34,6 +36,7 @@ public class SkillController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Skill> getById(@PathVariable Long id) {
         Skill skill = skillService.getDataById(id);
 
@@ -43,6 +46,7 @@ public class SkillController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Skill>> getAll() {
         List<Skill> skills = skillService.getAllData();
 
@@ -52,6 +56,7 @@ public class SkillController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> update(@RequestBody Skill skill) {
         if (isValidSkill(skill)) {
             if (skillService.getDataById(skill.getId()) == null) {
@@ -67,6 +72,7 @@ public class SkillController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (skillService.getDataById(id) == null) {
             return ResponseEntity.notFound().build();

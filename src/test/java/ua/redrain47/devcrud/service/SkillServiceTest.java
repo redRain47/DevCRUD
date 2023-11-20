@@ -2,20 +2,15 @@ package ua.redrain47.devcrud.service;
 
 import lombok.SneakyThrows;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ua.redrain47.devcrud.model.Skill;
 import ua.redrain47.devcrud.repository.SkillRepository;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class SkillServiceTest {
-    @Mock
-    private SkillRepository skillRepo;
-    @InjectMocks
-    private SkillService skillService;
+    private SkillRepository skillRepo = mock(SkillRepository.class);
+    private SkillService skillService = new SkillService(skillRepo);
     private Skill testSkill = new Skill(null, null);
 
     public SkillServiceTest() {
