@@ -22,7 +22,7 @@
         <mybatis.version>3.5.3</mybatis.version>
         <lombok.version>1.18.10</lombok.version>
         <mockito.all.version>1.10.19</mockito.all.version>
-        <logback.version>1.1.7</logback.version>
+        <logback.version>1.2.13</logback.version>
         <liquibase.version>3.8.5</liquibase.version>
         <spring.version>5.2.3.RELEASE</spring.version>
         <spring.security.version>5.3.0.RELEASE</spring.security.version>
