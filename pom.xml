@@ -24,7 +24,7 @@
         <mockito.all.version>1.10.19</mockito.all.version>
         <logback.version>1.1.7</logback.version>
         <liquibase.version>3.8.5</liquibase.version>
-        <spring.version>5.2.3.RELEASE</spring.version>
+        <spring.version>5.2.22.RELEASE</spring.version>
         <spring.security.version>5.3.0.RELEASE</spring.security.version>
         <javax.servlet.version>4.0.1</javax.servlet.version>
         <tomcat.version>8.5.50</tomcat.version>
